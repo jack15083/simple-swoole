@@ -26,7 +26,7 @@ class TestModel
         } else {
             Log::error(__METHOD__ . " udp rsp faield rsp ==" . print_r($rsp, true));
         }
-        yield $rsp;
+        return $rsp;
     }
 
     /*
@@ -49,7 +49,7 @@ class TestModel
         } else {
             Log::error(__METHOD__ . " tcp rsp faield rsp ==" . print_r($rsp, true));
         }
-        yield $rsp;
+        return $rsp;
     }
 
     public function mysqlTest()
@@ -93,7 +93,7 @@ class TestModel
     public function httpTest()
     {
         $postData = array();
-        $url = "http://10.xx.xx.xx:8893/test";
+        $url = "http://www.baidu.com/test";
         $hc = new frame\client\Http($url);
         $hc->setTimeout(30);// 以秒为单位 设置长一些 有些请求会超时
         $header = array(
@@ -103,59 +103,4 @@ class TestModel
         yield $res;
     }
 
-    public function udsTest()
-    {
-
-        $ip = '10.130.151.80';
-        $port = 8123;
-        $uds = new \frame\db\udl\Uds($ip, $port);
-        $sql = "SELECT FUin FROM db_crm3_mp.t_admin_gray_list WHERE FUin='822978945'";
-        yield $uds ->query($sql,0);
-    }
-
-
-    /* mutical return value structure
-        array('r' => 0,
-              'calltime' => 22,
-              'data' => array(
-                        'key1' => array(
-                                        'r' => 0,
-                                        'calltime' => 1,
-                                        'data' => array()
-                                        ),
-                        'key2' => array(
-                                        'r' => 0,
-                                        'calltime' => 1,
-                                        'data' => array()
-                                        ),
-
-                            )
-        );
-    */
-
-    public function multiTest()
-    {
-        $ip = '127.0.0.1';
-        $data = 'test';
-        $timeout = 0.5; //second
-        $multi = new \frame\client\Multi();
-        $firstReq = new \frame\client\Tcp($ip, '9905', $data, $timeout);
-        $secondReq = new \frame\client\Udp($ip, '9904', $data, $timeout);
-        $postData = array();
-        $url = "http://10.xx.xx.xx:8893/test";
-        $hc = new frame\client\Http($url);
-        $hc->setTimeout(30);// 以秒为单位 设置长一些 有些请求会超时
-        $header = array(
-            'User-Agent' => "xxxxx-agent",
-        );
-        $thirdReq = $hc->post($postData, $header);
-        
-        $calls = array(
-            'first' => $firstReq,
-            'secondReq' => $secondReq,
-            'thirdReq' => $thirdReq,
-            );
-        yield $multi ->calls($calls);
-
-    }
 }
