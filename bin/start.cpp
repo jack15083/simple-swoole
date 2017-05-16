@@ -46,7 +46,7 @@ int main(int argc,char*argv[])
         servcmd=argv[2];
     };
   //  cout << " serve name is "<<servname << " and cmd is "<<servcmd<<endl;
-    string cmd = php + " server.php " + (servname==NULL?" ":servname) + "  "+ (servcmd==NULL?" ":servcmd) ;
+    string cmd = php + " ../../shell/server.php " + (servname==NULL?" ":servname) + "  "+ (servcmd==NULL?" ":servcmd) ;
    // cout << cmd << endl;
     fp=popen(cmd.c_str(),"r");
     
