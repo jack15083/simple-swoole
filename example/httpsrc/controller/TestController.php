@@ -9,20 +9,17 @@ class TestController extends \frame\base\Controller
     {
 		Log::info("action test");
         $Totaldata = $this->getRequest();
-        /*
-            uds 测试 qidian的UDS配置， 查询操作
-         */
-        $rsp = $this ->udsTest();
+        $rsp = $this->httpTest();
 
         $this ->send(' HELLO WORLD ');
     }
 
-    private function udsTest(){
+    private function httpTest(){
 
         $model = new TestModel();
         $rsp = $model->httpTest();
         Log::info(__METHOD__ . " rsp == " . print_r($rsp, true));
-        yield $rsp;
+        return $rsp;
     }
 
 }
