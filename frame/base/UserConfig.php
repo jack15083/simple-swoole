@@ -15,7 +15,7 @@ class  UserConfig
 
     public function getConfig($val)
     {
-        return $this->UserConf;
+        return $this->UserConf[$val];
     }
     
     public function setConfig($config)
