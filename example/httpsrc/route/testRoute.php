@@ -1,6 +1,6 @@
 <?php
 
-class testRoute extends tsf\base\Route
+class testRoute extends frame\base\Route
 {
 
 }
