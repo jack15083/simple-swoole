@@ -355,45 +355,4 @@ class Http extends Base
 
     }
 
-    /**
-     * [parseHeader description]
-     * @param  [type] $headerBuf [description]
-     * @return [type]            [description]
-     */
-    private function parseHeader($headerBuf)
-    {
-
-        /*
-            version + status_code + message
-         */
-        $headParts = explode("\r\n", $headerBuf);
-        if (is_string($headParts)) {
-            $headParts = explode("\r\n", $headParts);
-        }
-
-        if (!is_array($headParts) || !count($headParts)) {
-
-            //TODO header buffer valid
-            return false;
-        }
-
-        list($this->rspHeaders['protocol'], $this->rspHeaders['status'], $this->rspHeaders['msg']) = explode(' ', $headParts[0], 3);
-        unset($headParts[0]);
-
-        foreach ($headParts as $header) {
-
-            $header = trim($header);
-            if (empty($header)) {
-                continue;
-            }
-
-            $h = explode(':', $header, 2);
-            $key = trim($h[0]);
-            $value = trim($h[1]);
-            $this->rspHeaders[$key] = $value;
-        }
-
-        //\frame\log\Log::debug(__METHOD__ . " header == " . print_r($this->rspHeaders, true), __CLASS__);
-    }
-
 }

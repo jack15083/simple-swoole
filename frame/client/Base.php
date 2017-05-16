@@ -18,7 +18,7 @@ class Base {
         $this ->timeout = $timeout;
     }
 
-	public function send(){
+	public function send() {
 
 	}
 
