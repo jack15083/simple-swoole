@@ -21,7 +21,7 @@ class App
                 return false;
             }
         } else {//使用默认的路由函数
-            $protocol = new \frame\http\Regex();
+            $protocol = new \frame\base\RouteRegex();
             $Serv->setRegister('protocol', $protocol);
         }
         return $Serv;

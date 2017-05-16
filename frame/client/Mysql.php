@@ -17,7 +17,7 @@ class Mysql extends Base{
     private $db_sock;
     const ERROR = 1;
     const OK = 0;
-    const TIMEOUT = 500,
+    const TIMEOUT = 500;
     /**
      * [__construct 构造函数，初始化mysqli]
      * @param [type] $sqlConf [description]
