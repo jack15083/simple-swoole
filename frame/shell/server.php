@@ -8,7 +8,7 @@
  */
 
 define('STARTBASEPATH', dirname(dirname(dirname(__FILE__))));
-define('STARTSHELLPATH', STARTBASEPATH . '/tsf/shell/Start.php');
+define('STARTSHELLPATH', STARTBASEPATH . '/frame/shell/Start.php');
 
 $cmds = array('start', 'stop', 'restart', 'list');
 $name = isset($argv[1]) ? $argv[1] : '';

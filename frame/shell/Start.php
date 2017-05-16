@@ -13,6 +13,31 @@ if (!$cmd || !$name) {
     echo "please input cmd and server name: start all,start testserv ";
     exit;
 }
+
+spl_autoload_register(function ($class) {
+
+    // what namespace prefix should be recognized?
+    $prefix = '/^frame\\\(.*?)\\\/is';
+    preg_match($prefix, $class, $matches);
+
+    if(empty($matches[1]))
+        return ;
+
+    // strip the prefix off the class
+    $class = substr($class, strlen($matches[0]));
+
+    // a partial filename
+    $part = str_replace('\\', DIRECTORY_SEPARATOR, $class) . '.php';
+
+    $file = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . $matches[1] . DIRECTORY_SEPARATOR . $part;
+
+    if(!file_exists($file))
+        return;
+
+    require_once $file;
+
+});
+
 //读取配置文件 然后启动对应的server
 $configPath = ((dirname(FRAMEWORKBASEPATH))) . '/conf/' . $name . '.ini';//获取配置地址
 if (!file_exists($configPath)) {
@@ -22,7 +47,7 @@ $config = parse_ini_file($configPath, true);
 
 $loader->addClassMap(generateClassMapFiles(new RecursiveDirectoryIterator(dirname($config['server']['root']))));
 
-$server = new \frame\core\Server();
+$server = new frame\core\Server();
 $server->servType = $config['server']['type'];
 //合并config 只读一次
 $server->config = array_merge($server->config, $config);
