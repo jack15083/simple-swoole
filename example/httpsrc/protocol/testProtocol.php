@@ -1,7 +1,7 @@
 <?php
 
 
-class testProtocol extends \tsf\base\Protocol
+class testProtocol extends \frame\base\Protocol
 {
 
 }
