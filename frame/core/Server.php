@@ -175,7 +175,7 @@ class Server
         $this->sw->on('Receive', array($this, 'onReceive'));
         $this->sw->on('Close', array($this, 'onClose'));
         $this->sw->on('WorkerStop', array($this, 'onWorkerStop'));
-        $this->sw->on('timer', array($this, 'onTimer'));
+        //$this->sw->on('timer', array($this, 'onTimer'));
         if ($this->servType == 'http') {
             $this->sw->on('Request', array($this, 'onRequest'));
         }
@@ -323,7 +323,7 @@ class Server
         if(empty($req->data['post'])){
             $req->data['post']=$request->rawContent();
         }
-        $req->scheduler = $this->sw->scheduler;
+
         $req->servType = $this->servType;
         $req->server = $this->sw;
 

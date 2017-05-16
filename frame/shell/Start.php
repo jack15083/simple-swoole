@@ -20,7 +20,7 @@ spl_autoload_register(function ($class) {
     $prefix = '/^frame\\\(.*?)\\\/is';
     preg_match($prefix, $class, $matches);
 
-    if(empty($matches[1]))
+    if(empty($matches[0]))
         return ;
 
     // strip the prefix off the class
@@ -29,7 +29,7 @@ spl_autoload_register(function ($class) {
     // a partial filename
     $part = str_replace('\\', DIRECTORY_SEPARATOR, $class) . '.php';
 
-    $file = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . $matches[1] . DIRECTORY_SEPARATOR . $part;
+    $file = dirname(__DIR__) . DIRECTORY_SEPARATOR . $matches[1] . DIRECTORY_SEPARATOR . $part;
 
     if(!file_exists($file))
         return;

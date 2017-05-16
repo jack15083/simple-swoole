@@ -2,7 +2,7 @@
 
 namespace frame\http;
 
-use frame\route\Route;
+use frame\base\Route;
 use frame\route\RouteInterface;
 
 class Regex extends \frame\base\Protocol {
