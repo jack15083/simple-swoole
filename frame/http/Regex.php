@@ -1,42 +1,19 @@
-<?php
-
+<?php 
 namespace frame\http;
 
 use frame\base\Route;
-use frame\route\RouteInterface;
 
-class Regex extends \frame\base\Protocol {
+class Regex extends \frame\base\Protocol
+{
 
-    public function onRoute($req) {
-        if (Route::isBind()) {
-            $uri = $req->data['server']['request_uri'];
-            $verb = $req->data['server']['request_method'];
-            $verb = strtolower($verb);
-            $method = $req->data['get']['_method'] ?: $req->data['post']['_method'];
-            if ($verb == 'post' && in_array(strtolower($method), ['put', 'delete'])) {
-                $verb = $method;
-            }
-            $routeResult = Route::dispatch($verb, $uri);
-            if ($routeResult[0] == RouteInterface::FOUND) {
-                if ($routeResult[1] instanceof \Closure) {
-                    return new \frame\base\Route('', $routeResult[1], $routeResult[2]);
-                }else {
-                    list($controller, $action) = $routeResult[1];
-                    return new \frame\base\Route($controller, $action, $routeResult[2]);
-                }
-            } else {
-                //TODO method not allowed
-                return false;
-            }
-        }else {
-            return $this->legacyRoute($req);
-        }
-    }
 
-    public function legacyRoute($req)  //默认为
+    public function onRoute($req)  //默认为
     {
         $uri = $req->data['server']['request_uri'];
         $verb = $req->data['server']['request_method'];
+
+//        $list = explode('/', $uri);
+//        return new Route(ucwords($list[1]) . 'Controller', 'action' . ucwords($list[2]), array());
         //读取配置文件
         $rewrite = $this->restRule();
         if (empty($rewrite) or !is_array($rewrite)) {
@@ -90,11 +67,12 @@ class Regex extends \frame\base\Protocol {
                 } else {
                     $mvc['get'] = $rule['default'];
                 }
-                return new \frame\base\Route($mvc['controller'] . 'Controller', 'action' . $mvc['action'], $mvc['get']);
+                return new Route($mvc['controller'] . 'Controller', 'action' . $mvc['action'], $mvc['get']);
             }
         }
         return false;
     }
+
 
     public function restRule()
     {
