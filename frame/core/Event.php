@@ -94,7 +94,8 @@ class Event
         }
         if (is_array($request->data))
             if($response->servType=='http'){
-                $request->data['get'] = array_merge((array)$request->data['get'], $data);
+                if(isset($request->data['get'])) $request->data['get'] = array_merge((array)$request->data['get'], $data);
+                else $request->data['get'] = $data;
             }else{
                 $request->data = array_merge($request->data, $data);
             }

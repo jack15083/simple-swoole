@@ -74,7 +74,7 @@ class Controller
     {
         $this->init();
         $this->{$actionName}();
-        reutn;
+        return;
     }
 
     public function addTask(Task $task) {
