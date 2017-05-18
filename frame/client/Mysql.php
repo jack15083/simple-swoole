@@ -3,18 +3,13 @@
 namespace frame\client;
 
 use frame\log\Log;
-use frame\pool\MysqlPool;
-
 class Mysql extends Base{
 
-    public $key;
+    public static $_instance = array();
     protected $db;
     protected $sql;
     protected $conf;
-    protected $callback;
-    protected $calltime;
 
-    private $db_sock;
     const ERROR = 1;
     const OK = 0;
     const TIMEOUT = 500;
@@ -22,9 +17,11 @@ class Mysql extends Base{
      * [__construct 构造函数，初始化mysqli]
      * @param [type] $sqlConf [description]
      */
-    public function __construct($config){
+    public function __construct($dbConfig, $instanceName = 'default'){
         $this->conf = $config;
         $this->db =  new Swoole\Coroutine\MySQL();
+        $this->connect();
+        self::$_instance[$instanceName] = $this;
     }
     
 
@@ -42,7 +39,7 @@ class Mysql extends Base{
             $result = $this->db->query($this ->sql);
             if ($result === false)
             {
-                if ($this ->db->errno == 2013 or $this->db->errno == 2006)
+                if ($this->db->errno == 2013 or $this->db->errno == 2006)
                 {
                     $this->db->close();
                     $r = $this ->db->connect();
@@ -50,6 +47,7 @@ class Mysql extends Base{
                     {
                         continue;
                     }
+                    log::error('sql query fail: error ' . $this->db->error . ' sql:' . $sql);
                 }
             }
             break;
@@ -74,6 +72,16 @@ class Mysql extends Base{
     
     public function getLastError() {
         return $this->db->error;
+    }
+    
+    /**
+     * 获取数据库初始化实例
+     * @param string $name
+     */
+    public static function getInstance($name = 'default') {
+        if(empty(self::$_instance[$name])) {
+            throw new \Exception('Database init error');
+        }
     }
     
     public function getLastErrno() {
