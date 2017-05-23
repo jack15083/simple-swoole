@@ -4,8 +4,8 @@
 // 定义根目录
 define('FRAMEWORKBASEPATH', dirname(dirname(__FILE__)));
 $loader = require_once dirname(FRAMEWORKBASEPATH) . '/vendor/autoload.php';
-require_once dirname(FRAMEWORKBASEPATH) . '/frame/App.php';
-require_once dirname(FRAMEWORKBASEPATH) . '/frame/Mysql.php';
+require_once dirname(FRAMEWORKBASEPATH) . '/frame/client/App.php';
+require_once dirname(FRAMEWORKBASEPATH) . '/frame/client/Mysql.php';
 
 //读取配置
 $cmd = $argv[1];   //cmd name
