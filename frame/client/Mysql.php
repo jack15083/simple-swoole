@@ -58,7 +58,7 @@ class Mysql extends Base{
         $this->db->connect([
             'host' => $this->conf['host'],
             'port' => $this->conf['port'],
-            'user' => $this->conf['user'],
+            'user' => $this->conf['username'],
             'password' => $this->conf['password'],
             'database' => $this->conf['database'],
             'timeout' => self::TIMEOUT,
