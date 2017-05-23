@@ -64,7 +64,7 @@ class TestModel
     public function dbTest() 
     {
         $db = new \frame\client\Mysql(ENVConst::getDBConf());
-        $res = $db->query("select * from pay_ads");
+        $res = $db->doQuery("select * from pay_ads");
         return $res;
     }
 
