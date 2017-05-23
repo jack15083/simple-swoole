@@ -63,8 +63,8 @@ class TestModel
     
     public function dbTest() 
     {
-        $db = new \frame\client\mysql(ENVConst::getDBConf());
-        $db = frame\client\Mysql::getInstance('users');
+        $db = new \frame\client\Mysql(ENVConst::getDBConf());
+        $db = \frame\client\Mysql::getInstance('users');
         $res = $db->query("show tables");
         return $res;
     }
