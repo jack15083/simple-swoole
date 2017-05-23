@@ -53,6 +53,8 @@ class Mysql extends Base{
             }
             break;
         }
+        
+        return $result;
     }
     
     public function connect() {
