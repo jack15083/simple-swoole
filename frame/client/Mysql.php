@@ -36,7 +36,7 @@ class Mysql extends Base{
         // retry twice
         for ($i = 0; $i < 2; $i++)
         {
-            $result = $this->db->query($this ->sql);
+            $result = $this->db->query($sql);
             if ($result === false)
             {
                 if ($this->db->errno == 2013 or $this->db->errno == 2006)
@@ -46,9 +46,10 @@ class Mysql extends Base{
                     if ($r === true)
                     {
                         continue;
-                    }
-                    log::error('sql query fail: error ' . $this->db->error . ' sql:' . $sql);
+                    }                    
                 }
+                
+                log::error('sql query fail: error ' . $this->db->error . ' sql:' . $sql);
             }
             break;
         }
