@@ -146,9 +146,9 @@ class Http extends Base
     public function send()
     {
         if($this->port == '443') 
-            $cli = new Swoole\Coroutine\Http\Client($this->host, $this->port, true);
+            $cli = new \Swoole\Coroutine\Http\Client($this->host, $this->port, true);
         else 
-            $cli = new Swoole\Coroutine\Http\Client($this->host, $this->port);
+            $cli = new \Swoole\Coroutine\Http\Client($this->host, $this->port);
         
         $cli->setHeaders($this->header);
         $cli->set([ 'timeout' => $this->timeout]);
