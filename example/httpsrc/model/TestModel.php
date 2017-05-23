@@ -63,9 +63,8 @@ class TestModel
     
     public function dbTest() 
     {
-        $db = new \frame\client\Mysql(ENVConst::getDBConf(), 'users');
-        $db = \frame\client\Mysql::getInstance('users');
-        $res = $db->query("show tables");
+        $db = new \frame\client\Mysql(ENVConst::getDBConf());
+        $res = $db->query("select * from pay_ads");
         return $res;
     }
 
