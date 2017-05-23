@@ -16,9 +16,14 @@ class MPConst
     public static function getDBConf()  //一些配置
     {
         return array(
-            'ip' => '0.0.0.0',
-            'port' => '555',
-
+            'host' => '127.0.0.1',
+            'username' => 'debian-sys-maint',
+            'password' => 'FgRRtKx8UVXpSI7c',
+            'db'=> 'users',
+            'port' => 3306,
+            'prefix' => '',
+            'charset' => 'utf8',
+            'instance' => 'users',
         );
     }
 

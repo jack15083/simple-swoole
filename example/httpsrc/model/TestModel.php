@@ -60,7 +60,13 @@ class TestModel
 //        $ret = (yield $sql ->query('desc test'));
 //        var_dump($ret);
     }
-
+    
+    public function dbTest() 
+    {
+        $db = frame\client\Mysql::getInstance('users');
+        $res = $db->query("show tables");
+        return $res;
+    }
 
     /*http 返回值
      *
