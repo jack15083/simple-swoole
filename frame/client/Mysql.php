@@ -19,7 +19,7 @@ class Mysql extends Base{
      */
     public function __construct($dbConfig, $instanceName = 'default'){
         $this->conf = $config;
-        $this->db =  new Swoole\Coroutine\MySQL();
+        $this->db =  new \Swoole\Coroutine\MySQL();
         $this->connect();
         self::$_instance[$instanceName] = $this;
     }

@@ -105,8 +105,8 @@ class TestModel
         $header = array(
             'User-Agent' => "xxxxx-agent",
         );
-        $res = (yield $hc->post($postData, $header));
-        yield $res;
+        $res = $hc->post($postData, $header);
+        return $res;
     }
 
 }
