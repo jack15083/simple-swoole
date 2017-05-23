@@ -60,7 +60,7 @@ class Mysql extends Base{
             'port' => $this->conf['port'],
             'user' => $this->conf['username'],
             'password' => $this->conf['password'],
-            'database' => $this->conf['database'],
+            'database' => $this->conf['db'],
             'timeout' => self::TIMEOUT,
             'charset' => $this->conf['charset'],
         ]);
