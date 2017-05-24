@@ -87,7 +87,7 @@ class Http extends Base
             \frame\log\Log::error(__METHOD__ . " miss host ", __CLASS__);
             return false;
         }
-        \frame\log\Log::info(print_r($info, true));
+        //\frame\log\Log::info(print_r($info, true));
         $this->path = isset($info['path']) ? $info['path'] : '/';
         $this->host = $info['host'];
         $this->querystring= isset($info['query']) ? $info['query'] : '';
@@ -155,13 +155,11 @@ class Http extends Base
         if(!empty($this->querystring)) $this->path = $this->path .'?' . $this->querystring;
         
         if($this->method == 'GET') 
-            $res = $cli->get($this->path);            
+            $cli->get($this->path);            
         else 
-            $res = $cli->post($this->path, $this->postdata);
+            $cli->post($this->path, $this->postdata);
         
-        \frame\log\Log::info(print_r($cli, true));
-        \frame\log\Log::info(print_r(get_class_methods($cli), true));
-        \frame\log\Log::info(print_r(get_class_methods($res), true));
+        $res = $cli->body;
         $cli->close();
         
         return $res;
