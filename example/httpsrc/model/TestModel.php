@@ -56,7 +56,7 @@ class TestModel
     public function httpTest()
     {
         $postData = array();
-        $url = "https://www.baidu.com";
+        $url = "http://www.baidu.com";
         $hc = new frame\client\Http($url);
         $hc->setTimeout(30);// 以秒为单位 设置长一些 有些请求会超时
         $header = array(
