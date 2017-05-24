@@ -5,13 +5,6 @@ use frame\log\Log;
 class TestModel
 {
 
-
-    /*
-    array('r' => 0,
-          'calltime' => 0.006115198135376,
-          'data' => Array(),
-    );
-    */
     public function udpTest()
     {
 
@@ -28,13 +21,7 @@ class TestModel
         }
         return $rsp;
     }
-
-    /*
-       array('r' => 0,
-             'calltime' => 0.006115198135376,
-             'data' => Array(),
-            );
-    */
+    
     public function tcpTest()
     {
 
@@ -52,50 +39,18 @@ class TestModel
         return $rsp;
     }
 
-    public function mysqlTest()
-    {
-//        $sql = new \frame\client\Mysql(array('host' => '127.0.0.1', 'port' => 3345, 'user' => 'root', 'password' => 'root', 'database' => 'test', 'charset' => 'utf-8',));
-//        $ret = (yield $sql ->query('show tables'));
-//        var_dump($ret);
-//        $ret = (yield $sql ->query('desc test'));
-//        var_dump($ret);
-    }
     
     public function dbTest() 
     {
         $db = new \frame\client\Mysql(ENVConst::getDBConf());
+        $string = $db->escape("abc'efg\r\n");
+        Log::info(__METHOD__ . " escape string is " . $string);
         $res = $db->doQuery("select * from pay_ads");
+        $db->close();
         return $res;
     }
 
-    /*http 返回值
-     *
-     *
-     *
-    ([r] => 0
-    [calltime] => 0.006115198135376
-    [data] => Array
-        (
-            [head] => Array
-                (
-                    [msg] => OK
-                    [status] => 200
-                    [protocol] => HTTP/1.1
-                    [X-Powered-By] => koa
-                    [Content-Type] => text/html; charset=utf-8
-                    [Content-Length] => 163
-                    [Date] => Thu, 20 Aug 2015 08:45:10 GMT
-                    [Connection] => keep-alive
-                )
-
-            [body] => 'HAHA'
-        )
-     )
-     *
-     *
-     *
-     */
-
+    
     public function httpTest()
     {
         $postData = array();

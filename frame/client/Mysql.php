@@ -3,9 +3,7 @@
 namespace frame\client;
 
 use frame\log\Log;
-class Mysql extends Base{
-
-    public static $_instance = array();
+class Mysql extends Base {
     protected $db;
     protected $sql;
     protected $conf;
@@ -17,7 +15,8 @@ class Mysql extends Base{
      * [__construct 构造函数，初始化mysqli]
      * @param [type] $sqlConf [description]
      */
-    public function __construct($dbConfig){
+    public function __construct($dbConfig)
+    {
         $this->conf = $dbConfig;     
         $this->db =  new \Swoole\Coroutine\MySQL();
         $this->connect();
@@ -30,7 +29,8 @@ class Mysql extends Base{
      * @param  [type] $sql [description]
      * @return [type]      [description]
      */
-    public function doQuery($sql){
+    public function doQuery($sql)
+    {
 
         // retry twice
         for ($i = 0; $i < 2; $i++)
@@ -56,7 +56,8 @@ class Mysql extends Base{
         return $result;
     }
     
-    public function connect() {
+    public function connect() 
+    {
         $this->db->connect([
             'host' => $this->conf['host'],
             'port' => $this->conf['port'],
@@ -68,26 +69,29 @@ class Mysql extends Base{
         ]);
     }
     
-    public function getLastInertId() {      
+    public function getLastInertId() 
+    {      
         return $this->db->insert_id;
     }
     
-    public function getLastError() {
+    public function getLastError() 
+    {
         return $this->db->error;
     }
     
-    /**
-     * 获取数据库初始化实例
-     * @param string $name
-     */
-    public static function getInstance($name = 'default') {
-        if(empty(self::$_instance[$name])) {
-            throw new \Exception('Database init error');
-        }
+    public function getLastErrno() 
+    {
+        return $this->db->errno;
     }
     
-    public function getLastErrno() {
-        return $this->db->errno;
+    public function close() 
+    {
+        $this->db->close();
+    }
+    
+    public function escape($string) 
+    {
+        return $this->db->escape($string);
     }
 
 }
