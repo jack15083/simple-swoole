@@ -159,6 +159,8 @@ class Http extends Base
             $cli->post($this->querystring, $this->postdata);
         
         $res = $cli->body;
+        \frame\log\Log::info(print_r($cli, true));
+        \frame\log\Log::info(print_r(get_class_methods($cli), true));
         $cli->close();
         
         return $res;

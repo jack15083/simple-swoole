@@ -45,7 +45,8 @@ class TestModel
         $db = new \frame\client\Mysql(ENVConst::getDBConf());
         //$string = $db->escape("abc'efg\r\n");
         //Log::info(__METHOD__ . " escape string is " . $string);
-        Log::info(__METHOD__ . " escape string is " . $string);
+        Log::info(print_r($db->db, true));
+        Log::info(print_r(get_class_methods($db->db), true));
         $res = $db->doQuery("select * from pay_ads");
         $db->close();
         return $res;
@@ -55,13 +56,13 @@ class TestModel
     public function httpTest()
     {
         $postData = array();
-        $url = "http://www.baidu.com/test";
+        $url = "https://www.baidu.com";
         $hc = new frame\client\Http($url);
         $hc->setTimeout(30);// 以秒为单位 设置长一些 有些请求会超时
         $header = array(
-            'User-Agent' => "xxxxx-agent",
+            'User-Agent' => "firefox-agent",
         );
-        $res = $hc->post($postData, $header);
+        $res = $hc->get([], $header);
         return $res;
     }
 
