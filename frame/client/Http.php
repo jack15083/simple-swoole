@@ -87,10 +87,10 @@ class Http extends Base
             \frame\log\Log::error(__METHOD__ . " miss host ", __CLASS__);
             return false;
         }
-
-        $this->path = $info['path'];
+        \frame\log\Log::info(print_r($info, true));
+        $this->path = isset($info['path']) ? $info['path'] : '/';
         $this->host = $info['host'];
-        $this->querystring= $info['query'];
+        $this->querystring= isset($info['query']) ? $info['query'] : '';
         $this->key = md5($uri . microtime(true) . rand(0, 10000));
         
     }
@@ -153,7 +153,6 @@ class Http extends Base
         $cli->setHeaders($this->header);
         $cli->set([ 'timeout' => $this->timeout]);
         if(!empty($this->querystring)) $this->path = $this->path .'?' . $this->querystring;
-        if(empty($this->path)) $this->path = '/';
         
         if($this->method == 'GET') 
             $res = $cli->get($this->path);            
