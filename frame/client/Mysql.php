@@ -4,13 +4,14 @@ namespace frame\client;
 
 use frame\log\Log;
 class Mysql extends Base {
-    protected $db;
+    public $db;
     protected $sql;
     protected $conf;
 
     const ERROR = 1;
     const OK = 0;
     const TIMEOUT = 500;
+    const QUERY_TIMEOUT = 5000;
     /**
      * [__construct 构造函数，初始化mysqli]
      * @param [type] $sqlConf [description]
@@ -35,7 +36,7 @@ class Mysql extends Base {
         // retry twice
         for ($i = 0; $i < 2; $i++)
         {
-            $result = $this->db->query($sql);
+            $result = $this->db->query($sql, self::QUERY_TIMEOUT);
             if ($result === false)
             {
                 if ($this->db->errno == 2013 or $this->db->errno == 2006)

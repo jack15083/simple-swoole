@@ -43,7 +43,8 @@ class TestModel
     public function dbTest() 
     {
         $db = new \frame\client\Mysql(ENVConst::getDBConf());
-        $string = $db->escape("abc'efg\r\n");
+        //$string = $db->escape("abc'efg\r\n");
+        //Log::info(__METHOD__ . " escape string is " . $string);
         Log::info(__METHOD__ . " escape string is " . $string);
         $res = $db->doQuery("select * from pay_ads");
         $db->close();
