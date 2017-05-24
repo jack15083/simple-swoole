@@ -152,15 +152,16 @@ class Http extends Base
         
         $cli->setHeaders($this->header);
         $cli->set([ 'timeout' => $this->timeout]);
+        if(!empty($this->querystring)) $this->path = $this->path .'?' . $this->querystring;
         
         if($this->method == 'GET') 
-            $cli->get($this->querystring);            
+            $cli->get($this->path);            
         else 
-            $cli->post($this->querystring, $this->postdata);
+            $cli->post($this->path, $this->postdata);
         
-        $res = $cli->body;
         \frame\log\Log::info(print_r($cli, true));
         \frame\log\Log::info(print_r(get_class_methods($cli), true));
+        \frame\log\Log::info(print_r(get_class_methods($res), true));
         $cli->close();
         
         return $res;
