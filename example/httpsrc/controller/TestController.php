@@ -11,13 +11,11 @@ class TestController extends \frame\base\Controller
         $Totaldata = $this->getRequest();
         $rsp = $this->httpTest();
 
-        $this ->send(' HELLO WORLD ' . print_r($rsp, true));
+        $this ->send(print_r($rsp, true));
     }
 
     private function httpTest() {
-        $model = new TestModel();
-        $rsp = $model->httpTest();
-        return $rsp;
+        $this->send('Hello World');
     }
     
     public function actionDbtest() {
