@@ -14,7 +14,7 @@ class TestController extends \frame\base\Controller
         $this ->send(print_r($data, true));
     }
 
-    private function actionTest() {
+    public function actionTest() {
         $this->send('Hello World');
     }
     
