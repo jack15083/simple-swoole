@@ -8,13 +8,13 @@ class TestController extends \frame\base\Controller
     public function actionHttptest()
     {
 		Log::info("action http test");
-        $Totaldata = $this->getRequest();
-        $rsp = $this->httpTest();
+        $model = new TestModel();
+        $data = $model->httpTest();
 
-        $this ->send(print_r($rsp, true));
+        $this ->send(print_r($data, true));
     }
 
-    private function httpTest() {
+    private function actionTest() {
         $this->send('Hello World');
     }
     
