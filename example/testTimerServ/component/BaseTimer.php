@@ -1,6 +1,6 @@
 <?php
 
-class BaseTimer extends \frame\core\Runnable {
+class BaseTimer extends frame\core\Runnable {
     /**
      * [run 执行函数]
      * @return [type] [description]

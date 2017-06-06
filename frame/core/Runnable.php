@@ -1,5 +1,5 @@
 <?php
-namespace tsf\core;
+namespace frame\core;
 
 abstract class Runnable
 {
