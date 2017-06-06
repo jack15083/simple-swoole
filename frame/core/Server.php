@@ -256,7 +256,7 @@ class Server
                 $taskConf = ['workerId' => $workerId, 'className' => $className];
                 $o = new $className($taskConf);
                 if (method_exists($o, 'start')) {
-                    $conf = ['path' => '/data/log/', 'loggerName' => $className, 'level' => $o->logLevel, 'decorators' => ['backtrace']];
+                    $conf = ['path' => '/data/log/server/', 'loggerName' => $className, 'level' => $o->logLevel, 'decorators' => ['backtrace']];
                     Log::create($conf);
                     swoole_timer_tick($o->interval, function () use ($workerId, $runnable, $o) {
                         try {

@@ -1,5 +1,5 @@
 <?php
-use frame\log\Log;
+use \frame\log\Log;
 class HomeOneMin extends BaseTimer {
 	
 	/**
