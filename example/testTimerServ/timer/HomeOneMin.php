@@ -18,7 +18,7 @@ class HomeOneMin extends BaseTimer {
      */
     public function run($subTaskId)
     {        
-		Log::debug('正在执行' . data("Y-m-d H:i:s"));        
+		Log::debug('正在执行' . date("Y-m-d H:i:s"));        
 	}
 	
 	
