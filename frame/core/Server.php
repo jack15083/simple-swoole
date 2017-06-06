@@ -246,27 +246,34 @@ class Server
 
         if ($workerId >= $this->setting['worker_num']) {
             $this ->_setProcessName($this->processName . ': task worker process');
-        } else {
+        } else { ////process timer server
             $this ->_setProcessName($this->processName . ': event worker process');
-            //process timer server
-            if (isset($this ->timers[$workerId])) {
-                $runnable = $this ->timers[$workerId];
-                require_once($runnable);
-                $className = basename($runnable, '.php');
-                $taskConf = ['workerId' => $workerId, 'className' => $className];
-                $o = new $className($taskConf);
-                if (method_exists($o, 'start')) {
-                    $conf = ['path' => '/data/log/server/', 'loggerName' => $className, 'level' => $o->logLevel, 'decorators' => ['backtrace']];
-                    Log::create($conf);
-                    swoole_timer_tick($o->interval, function () use ($workerId, $runnable, $o) {
-                        try {
-                            call_user_func([$o, 'start']);
-                        } catch (\Exception $e) {
-                            Log::error("error in runnable: $runnable, worker id: $workerId, e: " . print_r($e, true));
-                        }
-                    });
-                }
+            if(!isset($this ->timers[$workerId])) {
+                Log::error("time work not exist");
+                return;
             }
+                      
+            $runnable = $this ->timers[$workerId];
+            require_once($runnable);
+            $className = basename($runnable, '.php');
+            $taskConf = ['workerId' => $workerId, 'className' => $className];
+            $o = new $className($taskConf);
+            if (!method_exists($o, 'start')) {
+                Log::error($className . " must have start method");
+                return;
+            }
+            
+            $conf = ['path' => '/data/log/server/', 'loggerName' => $className, 'level' => $o->logLevel, 'decorators' => ['backtrace']];
+            Log::create($conf);
+            swoole_timer_tick($o->interval, function () use ($workerId, $runnable, $o) {
+                try {
+                    call_user_func([$o, 'start']);
+                } catch (\Exception $e) {
+                    Log::error("error in runnable: $runnable, worker id: $workerId, e: " . print_r($e, true));
+                }
+            });
+            
+            
         }
 
         $this->protocol->onStart($server, $workerId);
