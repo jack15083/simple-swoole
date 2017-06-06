@@ -1,5 +1,5 @@
 <?php
-use \frame\log\Log;
+use frame\log\Log;
 class HomeOneMin extends BaseTimer {
 	
 	/**
@@ -18,7 +18,7 @@ class HomeOneMin extends BaseTimer {
      */
     public function run($subTaskId)
     {        
-		Log::debug('正在执行' . date("Y-m-d H:i:s"));        
+		Log::info('正在执行' . date("Y-m-d H:i:s"));        
 	}
 	
 	
