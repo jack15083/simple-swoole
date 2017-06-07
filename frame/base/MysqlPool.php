@@ -4,7 +4,8 @@ namespace frame\base;
 use frame\log\Log;
 
 class MysqlPool {
-
+    const MAX_CONN = 100;
+    const TIME_OUT = 300;
     public static $working_pool;
     public static $free_queue;
     public static $config;
@@ -33,7 +34,7 @@ class MysqlPool {
     public static function start($connkey, $argv){
 
         if (empty(self::$timer_start)) {
-            Log::info(__METHOD__ . " schedule ", __CLASS__);
+            Log::info(__METHOD__ . " schedule " . print_r($argv, true));
             //开启调度策略
             self::schedule($connkey, $argv);
             
@@ -48,7 +49,8 @@ class MysqlPool {
      * @return [type]           [description]
      */
     public static function getResource($connkey, $argv){
-        if($argv['max'] = 0) $argv['max'] = 100;
+        if($argv['max'] == 0) $argv['max'] = self::MAX_CONN;
+        if($argv['timeout'] == 0) $argv['timeout'] = self::TIME_OUT;
         
         self::init($connkey, $argv['max']);
         self::start($connkey, $argv);
