@@ -44,6 +44,12 @@ class MysqliDB
     public function query($sql)
     {
         $result = $this->mysqli->query($sql);
+        if ($result === false) 
+        {
+            log::error('sql query fail: error ' . $this->mysqli->error . ' sql:' . $sql);
+            throw new \Exception('sql query error');
+        }
+
         return $result;
     }
     

@@ -249,7 +249,7 @@ class Server
         } else { ////process timer server
             $this ->_setProcessName($this->processName . ': event worker process');
             if(!isset($this ->timers[$workerId])) {
-                Log::error("time work not exist");
+                //Log::error("time work not exist");
                 return;
             }
                       

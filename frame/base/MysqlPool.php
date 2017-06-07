@@ -4,8 +4,8 @@ namespace frame\base;
 use frame\log\Log;
 
 class MysqlPool {
-    const MAX_CONN = 100;
-    const TIME_OUT = 300;
+    const MAX_CONN = 50;
+    const TIME_OUT = 100;
     public static $working_pool;
     public static $free_queue;
     public static $config;
