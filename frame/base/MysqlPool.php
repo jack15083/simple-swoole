@@ -31,7 +31,7 @@ class MysqlPool {
 
     public static function start($connkey, $argv){
 
-        if (empty(self::$timer_start)) {
+        if (!self::$timer_start) {
             Log::debug(__METHOD__ . " schedule ");
             //开启调度策略
             self::schedule($connkey, $argv);
@@ -103,7 +103,7 @@ class MysqlPool {
      */
     public static function schedule($connkey, $argv){
         Log::debug(__METHOD__ . 'schedule start:' . $argv['timeout']);
-        swoole_timer_tick($argv['timeout'], function() use($argv) {
+        swoole_timer_tick($argv['timeout'] * 1000, function() use($argv) {
             Log::debug('timer tick start');
             foreach (self::$working_pool as $connkey => $pool_data) {
                 foreach ($pool_data as $key => $data) {
