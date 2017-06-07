@@ -31,11 +31,11 @@ class MysqliDB
     
     public function connect($dbConfig)
     {
-        $mysqli = new \mysqli($dbConfig['host'], $dbConfig['user'], $dbConfig['password'], $dbConfig['db'], $dbConfig['port']);
-        if ($this->mysqli->connect_error)
+        $mysqli = new \mysqli($dbConfig['host'], $dbConfig['username'], $dbConfig['password'], $dbConfig['db'], $dbConfig['port']);
+        if ($mysqli->connect_error)
         {
             Log::error('mysql connect error ' . $mysqli->connect_error);
-            return false;
+            throw new \Exception('mysql connect error' . $mysqli->connect_error);
         }
         
         return $mysqli;
@@ -44,10 +44,10 @@ class MysqliDB
     public function query($sql)
     {
         $result = $this->mysqli->query($sql);
-        if ($result === false) 
+        if (!$result) 
         {
             log::error('sql query fail: error ' . $this->mysqli->error . ' sql:' . $sql);
-            throw new \Exception('sql query error');
+            throw new \Exception('sql query error' . $this->mysqli->error);
         }
 
         return $result;
