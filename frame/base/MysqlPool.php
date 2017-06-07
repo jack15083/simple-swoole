@@ -7,41 +7,33 @@ class MysqlPool {
 
     public static $working_pool;
     public static $free_queue;
-
-    public static $max;
-    public static $min;
-
-    public static $is_start;
+    public static $config;
+    public static $timer_start = false;
 
     /**
-     * [init 连接池初始化]
-     * @param  [type] $min [description]
+     * [init 连接池初始化 支持多个数据库连接池]
+     * @param  [type] $connkey [description]
      * @param  [type] $max [description]
      * @return [type]      [description]
      */
-    public static function init($min, $max){
-
-        self::$max = $max;
-        self::$min = $min;
-        self::$is_start = false;
-
-        self::$working_pool = array();
-        self::$free_queue = new \SplQueue();
-
-
+    public static function init($connkey, $max){
+        if (empty(self::$config[$connkey]['is_init'])) {
+            self::$config[$connkey]['max'] = $max;
+            self::$config[$connkey]['is_init'] = true;   
+            self::$working_pool[$connkey] = array();
+            self::$free_queue[$connkey] = new \SplQueue();
+        }
+        
     }
 
-    public static function start(){
+    public static function start($connkey, $argv){
 
-        if (!self::$is_start) {
+        if (empty(self::$timer_start)) {
             Log::info(__METHOD__ . " schedule ", __CLASS__);
             //开启调度策略
-            self::schedule();
-
-            //开启回收策略
-            //self::unsetResource();
+            self::schedule($connkey, $argv);
             
-            self::$is_start = true;
+            self::$timer_start = true;
         }   
     }
 
@@ -51,34 +43,35 @@ class MysqlPool {
      * @param  [type] $argv     [description]
      * @return [type]           [description]
      */
-    public static function getResource($arg){
+    public static function getResource($connkey, $argv){
+        self::init($connkey, $arg['max']);
+        self::start($connkey, $argv);
 
-        self::start();
-
-        if (!self::$free_queue ->isEmpty()) {
+        if (!self::$free_queue[$connkey]->isEmpty()) {
             /*
                 现有资源可处于空闲状态
              */
-            $key = self::$free_queue ->dequeue();
+            $key = self::$free_queue[$connkey]->dequeue();
             Log::info(__METHOD__ . " free queue  key == $key ", __CLASS__);
 
             return array(
                 'r' => 0,
                 'key' => $key,
-                'data' => self::update($key, $argv), //更新一些标记字段
+                'data' => self::update($connkey, $key, $argv), //更新一些标记字段
                 );
         }
 
-        elseif (count(self::$working_pool) < self::$max) {
+        elseif (count(self::$working_pool[$connkey]) < self::$config[$connkey]['max']) {
             Log::info(__METHOD__ . " below max ", __CLASS__);
             //当前池可以再添加资源用于分配
-            $key = count(self::$working_pool);
-            self::$working_pool[$key] = self::product($argv);
+            $key = count(self::$working_pool[$connkey]);
+            $resource = self::product($argv);
+            self::$working_pool[$connkey][$key] = self::product($argv);
 
             return array(
                 'r' => 0,
                 'key' => $key,
-                'data' => self::$working_pool[$key]['obj'],
+                'data' => self::$working_pool[$connkey][$key]['obj'],
                 );
         }
         else{
@@ -93,22 +86,32 @@ class MysqlPool {
      * @param  [type] $argv [description]
      * @return [type]       [description]
      */
-    public static function freeResource($key){
+    public static function freeResource($connkey, $key){
 
         Log::info(__METHOD__ . " key == $key", __CLASS__);
-        self::$free_queue ->enqueue($key);
-        self::$working_pool[$key]['status'] = 0;
+        self::$free_queue[$connkey]->enqueue($key);
+        self::$working_pool[$connkey][$key]['status'] = 0;
     }
 
     /**
-     * [schedule 定时调度]
+     * [schedule 定时调度 更新过期资源]
+     * @param timeout seconds
      * @return [type] [description]
      */
-    public static function schedule(){
-        $i = 0;
-        while ($i < 10) {
-            ;
-        }
+    public static function schedule($connkey, $argv){
+        swoole_timer_tick($argv['timeout'], function() use($argv) {
+            foreach (self::$working_pool as $connkey => $pool_data) {
+                foreach ($pool_data as $key => $data) {
+                    //当前连接已过期
+                    if($data['lifetime'] < microtime(true)) {
+                        //更新资源
+                        $resource = $argv['db']->connect($argv['config']);
+                        self::$working_pool[$connkey][$key]['obj'] = $resource;
+                        self::$working_pool[$connkey][$key]['lifetime'] = microtime(true) + floatval($argv['timeout']);
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -116,10 +119,10 @@ class MysqlPool {
      * @return [type] [description]
      */
     private static function product($argv){
-        $client = $argv['client'];
-        $client->db->connect($argv['config']);
+        $resource = $argv['db']->connect($argv['config']);
+        if(!$resource) return false;
         return array(
-            'obj' => $client,                                             //实例
+            'obj' => $resource,                                             //实例
             'lifetime' => microtime(true) + floatval($argv['timeout']),   //生命期
             'status' => 1,                                                //状态 1 在用 0 空闲
             );
@@ -131,10 +134,10 @@ class MysqlPool {
      * @param  [type] $argv [description]
      * @return [type]       [description]
      */
-    private static function update($key, $argv){
+    private static function update($connkey, $key, $argv){
 
-        self::$working_pool[$key]['status'] = 1;
-        self::$working_pool[$key]['lifetime'] = microtime(true) + floatval($argv['timeout']);
-        return self::$working_pool[$key]['obj'];
+        self::$working_pool[$connkey][$key]['status'] = 1;
+        self::$working_pool[$connkey][$key]['lifetime'] = microtime(true) + floatval($argv['timeout']);
+        return self::$working_pool[$connkey][$key]['obj'];
     }
 }

@@ -24,5 +24,12 @@ class TestController extends \frame\base\Controller
         $data = $model->dbTest();
         $this ->send(print_r($data, true));
     }
+    
+    public function actionTestPool() {
+        Log::info("action db test");
+        $model = new TestModel();
+        $data = $model->mysqliTest();
+        $this ->send(print_r($data, true));
+    }
 
 }

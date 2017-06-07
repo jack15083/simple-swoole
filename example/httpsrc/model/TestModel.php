@@ -51,6 +51,19 @@ class TestModel
         $db->close();
         return $res;
     }
+    
+    public function mysqliTest()
+    {
+        $db = new \frame\client\MysqliDB('users1', ENVConst::getDBConf());
+        //$string = $db->escape("abc'efg\r\n");
+        //Log::info(__METHOD__ . " escape string is " . $string);
+        $res = $db->query("select * from pay_ads");
+        $row = $res->fetch_row();
+        $res->free();
+        $db->close();
+        Log::info(print_r($row, true));
+        return $row;
+    }
 
     
     public function httpTest()
