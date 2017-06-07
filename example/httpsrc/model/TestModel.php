@@ -60,7 +60,7 @@ class TestModel
         $res = $db->query("select * from pay_ads");
         $row = $res->fetch_row();
         $res->free();
-        $db->close();
+        $db->free();
         Log::info(print_r($row, true));
         return $row;
     }
