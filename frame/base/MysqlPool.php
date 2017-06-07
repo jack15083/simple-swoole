@@ -18,10 +18,14 @@ class MysqlPool {
      */
     public static function init($connkey, $max){
         if (empty(self::$config[$connkey]['is_init'])) {
+            Log::info(__METHOD__ . " init start ");
             self::$config[$connkey]['max'] = $max;
             self::$config[$connkey]['is_init'] = true;   
             self::$working_pool[$connkey] = array();
             self::$free_queue[$connkey] = new \SplQueue();
+            
+            Log::info(print_r(self::$config, true));
+            Log::info(print_r(self::$working_pool, true));
         }
         
     }
