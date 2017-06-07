@@ -19,14 +19,12 @@ class MysqlPool {
      */
     public static function init($connkey, $max){
         if (empty(self::$config[$connkey]['is_init'])) {
-            Log::info(__METHOD__ . " init start ");
+            Log::debug(__METHOD__ . " init start ");
             self::$config[$connkey]['max'] = $max;
             self::$config[$connkey]['is_init'] = true;   
             self::$working_pool[$connkey] = array();
             self::$free_queue[$connkey] = new \SplQueue();
-            
-            Log::info(print_r(self::$config, true));
-            Log::info(print_r(self::$working_pool, true));
+
         }
         
     }
@@ -58,7 +56,7 @@ class MysqlPool {
         if (!self::$free_queue[$connkey]->isEmpty()) {
             //现有资源可处于空闲状态
             $key = self::$free_queue[$connkey]->dequeue();
-            Log::info(__METHOD__ . " free queue  key == $key ", __CLASS__);
+            Log::debug(__METHOD__ . " free queue  key == $key ", __CLASS__);
 
             return array(
                 'r' => 0,
@@ -68,7 +66,7 @@ class MysqlPool {
         }
 
         elseif (count(self::$working_pool[$connkey]) < self::$config[$connkey]['max']) {
-            Log::info(__METHOD__ . " below max ", __CLASS__);
+            Log::debug(__METHOD__ . " below max ", __CLASS__);
             //当前池可以再添加资源用于分配
             $key = count(self::$working_pool[$connkey]);
             $resource = self::product($argv);
@@ -93,7 +91,7 @@ class MysqlPool {
      * @return [type]       [description]
      */
     public static function freeResource($connkey, $key){
-        Log::info(__METHOD__ . " key == $key", __CLASS__);
+        Log::debug(__METHOD__ . " key == $key", __CLASS__);
         self::$free_queue[$connkey]->enqueue($key);
         self::$working_pool[$connkey][$key]['status'] = 0;
     }
@@ -104,7 +102,9 @@ class MysqlPool {
      * @return [type] [description]
      */
     public static function schedule($connkey, $argv){
+        Log::debug(__METHOD__ . 'schedule start:' . $argv['timeout']);
         swoole_timer_tick($argv['timeout'], function() use($argv) {
+            Log::debug('timer tick start');
             foreach (self::$working_pool as $connkey => $pool_data) {
                 foreach ($pool_data as $key => $data) {
                     //当前连接已过期
