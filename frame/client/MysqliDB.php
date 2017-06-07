@@ -25,7 +25,7 @@ class MysqliDB
         else
         {
             Log::error('get mysql resource error, connection key is ' . $connkey);
-            throw new \Exception('get mysql resource error, connection key is' . $connkey );
+            throw new \Exception('get mysql resource error, connection key is ' . $connkey );
         }
     }
     

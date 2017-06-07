@@ -44,13 +44,13 @@ class MysqlPool {
      * @return [type]           [description]
      */
     public static function getResource($connkey, $argv){
-        self::init($connkey, $arg['max']);
+        if($argv['max'] = 0) $argv['max'] = 100;
+        
+        self::init($connkey, $argv['max']);
         self::start($connkey, $argv);
 
         if (!self::$free_queue[$connkey]->isEmpty()) {
-            /*
-                现有资源可处于空闲状态
-             */
+            //现有资源可处于空闲状态
             $key = self::$free_queue[$connkey]->dequeue();
             Log::info(__METHOD__ . " free queue  key == $key ", __CLASS__);
 
