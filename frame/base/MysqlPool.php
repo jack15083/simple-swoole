@@ -4,8 +4,8 @@ namespace frame\base;
 use frame\log\Log;
 
 class MysqlPool {
-    const MAX_CONN = 50;
-    const TIME_OUT = 100;
+    const MAX_CONN = 100;
+    const TIME_OUT = 28000;
     public static $working_pool;
     public static $free_queue;
     public static $config;
@@ -93,7 +93,6 @@ class MysqlPool {
      * @return [type]       [description]
      */
     public static function freeResource($connkey, $key){
-
         Log::info(__METHOD__ . " key == $key", __CLASS__);
         self::$free_queue[$connkey]->enqueue($key);
         self::$working_pool[$connkey][$key]['status'] = 0;
@@ -111,9 +110,11 @@ class MysqlPool {
                     //当前连接已过期
                     if($data['lifetime'] < microtime(true)) {
                         //更新资源
+                        $argv['db']->close();
                         $resource = $argv['db']->connect($argv['config']);
                         self::$working_pool[$connkey][$key]['obj'] = $resource;
                         self::$working_pool[$connkey][$key]['lifetime'] = microtime(true) + floatval($argv['timeout']);
+                        Log::info('更新working pool key:' . $connkey . $key);
                     }
                 }
             }

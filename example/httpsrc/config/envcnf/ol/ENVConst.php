@@ -18,8 +18,8 @@ class ENVConst
             'charset' => 'utf8',
             'instance' => 'users',
             'pool' => [
-                'max' => 100, //最大连接数100
-                'timeout' => 300  //连接过期时间300S
+                'max' => 100, //最大连接数5
+                'timeout' => 28000  //连接过期时间28000S
             ]
         );
     }
