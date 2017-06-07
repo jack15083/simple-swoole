@@ -32,7 +32,7 @@ class MysqlPool {
     public static function start($connkey, $argv){
 
         if (empty(self::$timer_start)) {
-            Log::info(__METHOD__ . " schedule " . print_r($argv, true));
+            Log::debug(__METHOD__ . " schedule ");
             //开启调度策略
             self::schedule($connkey, $argv);
             
