@@ -7,7 +7,6 @@ class MysqlPool {
     const MAX_CONN = 100;
     const TIME_OUT = 1800;
     const MIN_CONN = 10; //最小连接
-    const UPDATE_TIME_INTERVAL = 30000; //定时更新毫秒
     const RECOVERY_TIME_INTERVAL = 30000; //定时回收毫秒
     
     public static $working_pool;
@@ -109,34 +108,35 @@ class MysqlPool {
      * @return [type] [description]
      */
     public static function schedule($connkey, $argv){
-        Log::debug(__METHOD__ . 'schedule start:' . $argv['timeout']);
-        swoole_timer_tick(self::UPDATE_TIME_INTERVAL, function() use($argv) {          
+        Log::debug(__METHOD__ . 'schedule start:' . $argv['timeout'] . 's');
+        swoole_timer_tick($argv['timeout'] * 1000, function() use($argv) {          
             Log::debug('schedule timer tick start');
             foreach (self::$working_pool as $connkey => $pool_data) {
                 foreach ($pool_data as $key => $data) {
-                    //当前连接已过期
+                    //当前连接已超时
                     if($data['lifetime'] < microtime(true)) {
-                        //更新资源
-                        self::udateConnect($connkey, $key, $argv);
-                    }
+                        //释放资源
+                        self::freeResource($connkey, $key);
+                    }                    
                 }
             }
         });
     }
      
     public static function recovery($connkey, $argv){
-        Log::debug(__METHOD__ . 'recovery start:' . $argv['timeout']);
+        Log::debug(__METHOD__ . 'recovery start:' . self::RECOVERY_TIME_INTERVAL);
         swoole_timer_tick(self::RECOVERY_TIME_INTERVAL, function() use($argv) {
             Log::debug('recovery timer tick start');
             foreach (self::$free_queue as $connkey => $queue) {
                 if($queue->isEmpty()) 
                     continue;               
-                //空闲资源超过最小连接数
+                //空闲资源超过最小连接，关闭多余的数据库连接
                 for($i = self::MIN_CONN; $i <= $queue->count(); ) {
                     $key = $queue->dequeue();
                     //关闭数据库连接
                     self::$working_pool[$connkey][$key]['obj']->close();
                     unset(self::$working_pool[$connkey][$key]);
+                    Log::info('关闭多余数据库连接 key:' . $key);
                 }
             }
         });
