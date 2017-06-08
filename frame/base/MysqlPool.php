@@ -114,7 +114,7 @@ class MysqlPool {
             foreach (self::$working_pool as $connkey => $pool_data) {
                 foreach ($pool_data as $key => $data) {
                     //当前连接已超时
-                    if($data['lifetime'] < microtime(true)) {
+                    if($data['status'] != 0 && $data['lifetime'] < microtime(true)) {
                         //释放资源
                         self::freeResource($connkey, $key);
                     }                    
@@ -128,15 +128,15 @@ class MysqlPool {
         swoole_timer_tick(self::RECOVERY_TIME_INTERVAL, function() use($argv) {
             Log::debug('recovery timer tick start');
             foreach (self::$free_queue as $connkey => $queue) {
-                if($queue->isEmpty()) 
+                if($queue->isEmpty() || $queue->count() <= $argv['min']) 
                     continue;               
                 //空闲资源超过最小连接，关闭多余的数据库连接
-                for($i = self::MIN_CONN; $i <= $queue->count(); ) {
+                for($i = $argv['min']; $i <= $queue->count();) {
                     $key = $queue->dequeue();
                     //关闭数据库连接
                     self::$working_pool[$connkey][$key]['obj']->close();
                     unset(self::$working_pool[$connkey][$key]);
-                    Log::info('关闭多余数据库连接 key:' . $key);
+                    Log::info('关闭多余数据库连接 key:' . $key . ' queue count:' . $queue->count());
                 }
             }
         });
