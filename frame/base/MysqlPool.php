@@ -131,12 +131,12 @@ class MysqlPool {
                 if($queue->isEmpty() || $queue->count() <= $argv['min']) 
                     continue;               
                 //空闲资源超过最小连接，关闭多余的数据库连接
-                for($i = $argv['min']; $i <= $queue->count();) {
+                for($i = $argv['min']; $i < $queue->count();) {
                     $key = $queue->dequeue();
                     //关闭数据库连接
                     self::$working_pool[$connkey][$key]['obj']->close();
                     unset(self::$working_pool[$connkey][$key]);
-                    Log::info('关闭多余数据库连接 key:' . $key . ' queue count:' . $queue->count());
+                    Log::info(__METHOD__ . ' key' . $key . ' queue count:' . $queue->count());
                 }
             }
         });

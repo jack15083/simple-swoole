@@ -15,6 +15,7 @@ class MysqliDB
         $this->argv['config'] = $dbConfig;
         $this->argv['timeout'] = $dbConfig['pool']['timeout'];
         $this->argv['max'] = $dbConfig['pool']['max'];
+        $this->argv['min'] = $dbConfig['pool']['min'];
         $this->argv['db'] = $this;
         $this->getResource($connkey, $this->argv);
     }
