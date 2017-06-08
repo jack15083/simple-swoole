@@ -63,6 +63,8 @@ class TestModel
         //$string = $db->escape("abc'efg\r\n");
         //Log::info(__METHOD__ . " escape string is " . $string);
         $res = $db->query("select * from pay_ads");
+        if(empty($res)) 
+            return false;
         $row = $res->fetch_row();
         $res->free();
         $db->free();
