@@ -25,7 +25,7 @@ class MysqliDB
         if ($mysqli->connect_error)
         {
             Log::error('mysql connect error ' . $mysqli->connect_error);
-            throw new \Exception('mysql connect error' . $mysqli->connect_error);
+            //throw new \Exception('mysql connect error' . $mysqli->connect_error);
         }
         
         return $mysqli;
@@ -51,7 +51,7 @@ class MysqliDB
             break;
         }
         
-        if(!$result) throw new \Exception('execute sql error');
+        //if(!$result) throw new \Exception('execute sql error');
         
         return $result;
     }
@@ -87,8 +87,8 @@ class MysqliDB
         }
         else
         {
-            Log::error('get mysql resource error, connection key is ' . $connkey);
-            throw new \Exception('get mysql resource error, connection key is ' . $connkey );
+            Log::error('get mysql resource error, connection key is ' . $connkey . ' key:' . $this->reskey);
+            //throw new \Exception('get mysql resource error, connection key is ' . $connkey );
         }
     }
 }
