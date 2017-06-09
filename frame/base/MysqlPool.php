@@ -79,13 +79,9 @@ class MysqlPool {
                 Log::info('product resource error:' . $connkey . $key);
                 return array('r' => 1);
             }
-            //防止并发情况重复连接
-            if(empty(self::$working_pool[$connkey][$key])) 
-                self::$working_pool[$connkey][$key] = $resource;
-            else {
-                Log::info('重复申请关闭当前连接:' . $connkey . $key);
-                $resource['obj']->close();
-            }
+            
+            self::$working_pool[$connkey][$key] = $resource;
+            
 
             return array(
                 'r' => 0,
@@ -144,9 +140,8 @@ class MysqlPool {
                     $key = $queue->dequeue();
                     //关闭数据库连接
                     self::$working_pool[$connkey][$key]['obj']->close();
-                    self::$connect_num[$connkey]--;
                     unset(self::$working_pool[$connkey][$key]);
-                    Log::info(__METHOD__ . ' key' . $key . ' queue count:' . $queue->count() . ' connect number:' . self::$connect_num);
+                    Log::info(__METHOD__ . ' key' . $key . ' queue count:' . $queue->count() . ' connect number:' . count(self::$working_pool[$connkey]));
                 }
             }
         });
