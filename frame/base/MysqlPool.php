@@ -13,6 +13,7 @@ class MysqlPool {
     public static $free_queue;
     public static $config;
     public static $timer_start = false;
+    public static $connect_num = 0; //当前数据库连接数
 
     /**
      * [init 连接池初始化 支持多个数据库连接池]
@@ -71,10 +72,11 @@ class MysqlPool {
                 );
         }
 
-        elseif (($key = count(self::$working_pool[$connkey])) < self::$config[$connkey]['max']) {
+        elseif (self::$connect_num < self::$config[$connkey]['max']) {
+            $key = self::$connect_num;
             Log::debug(__METHOD__ . " below max, current count:" . $key, __CLASS__);
             //当前池可以再添加资源用于分配         
-            $resource = self::product($argv);
+            $resource = self::product($connkey, $argv);
             //product失败
             if(!$resource) {
                 Log::info('product resource error:' . $connkey . $key);
@@ -140,8 +142,9 @@ class MysqlPool {
                     $key = $queue->dequeue();
                     //关闭数据库连接
                     self::$working_pool[$connkey][$key]['obj']->close();
+                    self::$connect_num--;
                     unset(self::$working_pool[$connkey][$key]);
-                    Log::info(__METHOD__ . ' key' . $key . ' queue count:' . $queue->count());
+                    Log::info(__METHOD__ . ' key' . $key . ' queue count:' . $queue->count() . ' connect number:' . self::$connect_num);
                 }
             }
         });
@@ -150,9 +153,14 @@ class MysqlPool {
      * [product 生产资源]
      * @return [type] [description]
      */
-    private static function product($argv){
+    private static function product($connkey, $argv){
+        //防止并发出现已超过连接数
+        if(self::$connect_num >= self::$config[$connkey]['max']) 
+            return false;
+        
         $resource = $argv['db']->connect($argv['config']);
         if(!$resource) return false;
+        self::$connect_num++;
         return array(
             'obj' => $resource,                                             //实例
             'lifetime' => microtime(true) + floatval($argv['timeout']),   //生命期
