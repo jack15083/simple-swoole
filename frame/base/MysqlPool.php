@@ -80,7 +80,13 @@ class MysqlPool {
                 return array('r' => 1);
             }
             
-            self::$working_pool[$connkey][$key] = $resource;
+            if(empty(self::$working_pool[$connkey][$key])) {
+                self::$working_pool[$connkey][$key] = $resource;
+            }
+            else {
+                Log::debug("并发存在关闭当前key" . $key);
+                $resource['obj']->close();
+            }
             
 
             return array(
