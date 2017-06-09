@@ -88,15 +88,8 @@ class MysqlPool {
                 return array('r' => 1);
             }
             
-            if(empty(self::$working_pool[$connkey][$key])) {
-                self::$working_pool[$connkey][$key] = $resource;
-            }
-            else {
-                Log::debug("并发存在关闭当前key" . $key);
-                $resource['obj']->close();
-            }
-            
-
+            self::$working_pool[$connkey][$key] = $resource;
+                     
             return array(
                 'r' => 0,
                 'key' => $key,
@@ -141,7 +134,12 @@ class MysqlPool {
             }
         });
     }
-     
+    
+    /**
+     * 定时回收超时连接资源
+     * @param string $connkey
+     * @param array $argv
+     */
     public static function recovery($connkey, $argv){
         Log::debug(__METHOD__ . 'recovery start:' . self::RECOVERY_TIME_INTERVAL);
         swoole_timer_tick(self::RECOVERY_TIME_INTERVAL, function() use($argv) {
