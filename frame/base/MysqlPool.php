@@ -11,6 +11,7 @@ class MysqlPool {
     
     public static $working_pool;
     public static $free_queue;
+    public static $close_queue;
     public static $config;
     public static $timer_start = false;
 
@@ -28,6 +29,7 @@ class MysqlPool {
             self::$config[$connkey]['is_init'] = true;   
             self::$working_pool[$connkey] = array();
             self::$free_queue[$connkey] = new \SplQueue();
+            self::$close_queue[$connkey] = new \SplQueue();
         }
         
     }
@@ -70,8 +72,14 @@ class MysqlPool {
                 );
         }
 
-        elseif (($key = count(self::$working_pool[$connkey])) < self::$config[$connkey]['max']) {
+        elseif (count(self::$working_pool[$connkey]) < self::$config[$connkey]['max']) {
             Log::debug(__METHOD__ . " below max, current count:" . $key, __CLASS__);
+            if(self::$close_queue[$connkey]->isEmpty()) {
+                $key = count(self::$working_pool[$connkey]);
+            }
+            else {
+                $key = self::$close_queue[$connkey]->dequeue();
+            }
             //当前池可以再添加资源用于分配         
             $resource = self::product($connkey, $argv);
             //product失败
@@ -146,9 +154,10 @@ class MysqlPool {
                     $key = $queue->dequeue();
                     //关闭数据库连接
                     self::$working_pool[$connkey][$key]['obj']->close();
+                    self::$close_queue[$connkey]->enqueue($key);
                     unset(self::$working_pool[$connkey][$key]);
                     Log::info(__METHOD__ . ' key' . $key . ' queue count:' . $queue->count() . ' connect number:' . count(self::$working_pool[$connkey]));
-                }
+                }               
             }
         });
     }
