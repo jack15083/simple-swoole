@@ -3,6 +3,7 @@ An php mvc framewrok base Swoole
 # 安装
 基于linux环境，运行需要先安装swoole 2.0扩展
 支持PHP7 
+支持数据库连接池
 
 #运行
 
