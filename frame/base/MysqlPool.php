@@ -76,7 +76,13 @@ class MysqlPool {
             //当前池可以再添加资源用于分配
             $key = count(self::$working_pool[$connkey]);
             $resource = self::product($argv);
-            self::$working_pool[$connkey][$key] = self::product($argv);
+            //product失败
+            if(!$resource) {
+                Log::info('product resource error:' . $connkey . $key);
+                return array('r' => 1);
+            }
+            
+            self::$working_pool[$connkey][$key] = $resource;
 
             return array(
                 'r' => 0,
