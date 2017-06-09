@@ -71,10 +71,9 @@ class MysqlPool {
                 );
         }
 
-        elseif (count(self::$working_pool[$connkey]) < self::$config[$connkey]['max']) {
-            Log::debug(__METHOD__ . " below max ", __CLASS__);
-            //当前池可以再添加资源用于分配
-            $key = count(self::$working_pool[$connkey]);
+        elseif (($key = count(self::$working_pool[$connkey])) < self::$config[$connkey]['max']) {
+            Log::debug(__METHOD__ . " below max, current count:" . $key, __CLASS__);
+            //当前池可以再添加资源用于分配         
             $resource = self::product($argv);
             //product失败
             if(!$resource) {
