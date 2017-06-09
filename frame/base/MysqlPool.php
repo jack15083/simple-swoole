@@ -13,7 +13,6 @@ class MysqlPool {
     public static $free_queue;
     public static $config;
     public static $timer_start = false;
-    public static $connect_num = 0; //当前数据库连接数
 
     /**
      * [init 连接池初始化 支持多个数据库连接池]
@@ -29,7 +28,6 @@ class MysqlPool {
             self::$config[$connkey]['is_init'] = true;   
             self::$working_pool[$connkey] = array();
             self::$free_queue[$connkey] = new \SplQueue();
-
         }
         
     }
@@ -72,8 +70,7 @@ class MysqlPool {
                 );
         }
 
-        elseif (self::$connect_num < self::$config[$connkey]['max']) {
-            $key = self::$connect_num;
+        elseif (($key = count(self::$working_pool[$connkey])) < self::$config[$connkey]['max']) {
             Log::debug(__METHOD__ . " below max, current count:" . $key, __CLASS__);
             //当前池可以再添加资源用于分配         
             $resource = self::product($connkey, $argv);
@@ -82,8 +79,13 @@ class MysqlPool {
                 Log::info('product resource error:' . $connkey . $key);
                 return array('r' => 1);
             }
-            
-            self::$working_pool[$connkey][$key] = $resource;
+            //防止并发情况重复连接
+            if(empty(self::$working_pool[$connkey][$key])) 
+                self::$working_pool[$connkey][$key] = $resource;
+            else {
+                Log::info('重复申请并闭当前连接:' . $connkey . $key);
+                $resource['obj']->close();
+            }
 
             return array(
                 'r' => 0,
@@ -142,7 +144,7 @@ class MysqlPool {
                     $key = $queue->dequeue();
                     //关闭数据库连接
                     self::$working_pool[$connkey][$key]['obj']->close();
-                    self::$connect_num--;
+                    self::$connect_num[$connkey]--;
                     unset(self::$working_pool[$connkey][$key]);
                     Log::info(__METHOD__ . ' key' . $key . ' queue count:' . $queue->count() . ' connect number:' . self::$connect_num);
                 }
@@ -155,12 +157,11 @@ class MysqlPool {
      */
     private static function product($connkey, $argv){
         //防止并发出现已超过连接数
-        if(self::$connect_num >= self::$config[$connkey]['max']) 
+        if(count(self::$working_pool[$connkey]) >= self::$config[$connkey]['max']) 
             return false;
         
         $resource = $argv['db']->connect($argv['config']);
         if(!$resource) return false;
-        self::$connect_num++;
         return array(
             'obj' => $resource,                                             //实例
             'lifetime' => microtime(true) + floatval($argv['timeout']),   //生命期
