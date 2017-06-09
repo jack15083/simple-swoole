@@ -55,11 +55,11 @@ class TestModel
     public function mysqliTest()
     {
         $db = new \frame\client\MysqliDB('users1', ENVConst::getDBConf());
-        $test = array();
+        /* $test = array();
         for($i = 0; $i < 10; $i++)
         {
             $test[$i] = new \frame\client\MysqliDB('users1', ENVConst::getDBConf());
-        }
+        } */
         //$string = $db->escape("abc'efg\r\n");
         //Log::info(__METHOD__ . " escape string is " . $string);
         $res = $db->query("select * from pay_ads");
