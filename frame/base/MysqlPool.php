@@ -83,7 +83,7 @@ class MysqlPool {
             if(empty(self::$working_pool[$connkey][$key])) 
                 self::$working_pool[$connkey][$key] = $resource;
             else {
-                Log::info('重复申请并闭当前连接:' . $connkey . $key);
+                Log::info('重复申请关闭当前连接:' . $connkey . $key);
                 $resource['obj']->close();
             }
 
