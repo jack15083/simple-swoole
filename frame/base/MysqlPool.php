@@ -10,8 +10,8 @@ class MysqlPool {
     const RECOVERY_TIME_INTERVAL = 30000; //定时回收毫秒
     
     public static $working_pool;
-    public static $free_queue;
-    public static $close_queue;
+    public static $free_queue; //空闲连接资源队列
+    public static $close_queue; //已关闭连接资源队列
     public static $config;
     public static $timer_start = false;
 
