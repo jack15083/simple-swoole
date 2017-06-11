@@ -5,7 +5,7 @@ namespace frame\base;
 class  UserConfig
 {
     private $UserConf = array(
-        'log' => array('path' => '/data/log/server', 'loggerName' => 'httpServer', 'level' => 'debug'),
+        'log' => array('path' => '/data/logs/server', 'loggerName' => 'httpServer', 'level' => 'debug'),
         'register' => array(
             //      'init' => 'LongUrl2ShortInit',
             //    'protocol' => 'testProtocol',

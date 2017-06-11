@@ -263,7 +263,7 @@ class Server
                 return;
             }
             
-            $conf = ['path' => '/data/log/server/', 'loggerName' => $className, 'level' => $o->logLevel, 'decorators' => ['backtrace']];
+            $conf = ['path' => '/data/logs/server/', 'loggerName' => $className, 'level' => $o->logLevel, 'decorators' => ['backtrace']];
             Log::create($conf);
             swoole_timer_tick($o->interval, function () use ($workerId, $runnable, $o) {
                 try {
