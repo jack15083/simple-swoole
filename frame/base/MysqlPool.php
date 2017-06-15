@@ -9,7 +9,7 @@ class MysqlPool
     const TIME_OUT = 1800;
     const MIN_CONN = 10; //最小连接
     const RECOVERY_TIME_INTERVAL = 30000; //定时回收毫秒
-    
+
     public static $working_pool;
     public static $free_queue; //空闲连接资源队列
     public static $close_queue; //已关闭连接资源队列
@@ -28,12 +28,12 @@ class MysqlPool
             Log::debug(__METHOD__ . " init start ");
             self::$config[$connkey]['max'] = $argv['max'];
             self::$config[$connkey]['min'] = $argv['min'];
-            self::$config[$connkey]['is_init'] = true;   
+            self::$config[$connkey]['is_init'] = true;
             self::$working_pool[$connkey] = array();
             self::$free_queue[$connkey] = new \SplQueue();
             self::$close_queue[$connkey] = new \SplQueue();
         }
-        
+
     }
 
     /**
@@ -52,7 +52,7 @@ class MysqlPool
             //定时回收数据库连接资源
             self::recovery($connkey, $argv);
             self::$timer_start = true;
-        }   
+        }
     }
 
     /**
@@ -66,7 +66,7 @@ class MysqlPool
         if(empty($argv['max'])) $argv['max'] = self::MAX_CONN;
         if(empty($argv['min'])) $argv['min'] = self::MIN_CONN;
         if(empty($argv['timeout'])) $argv['timeout'] = self::TIME_OUT;
-        
+
         self::init($connkey, $argv);
         self::start($connkey, $argv);
 
@@ -79,7 +79,7 @@ class MysqlPool
             return array(
                 'r' => 0,
                 'key' => $key,
-                'data' => self::update($connkey, $key, $argv), 
+                'data' => self::update($connkey, $key, $argv),
             );
         }
 
@@ -95,7 +95,7 @@ class MysqlPool
                 $key = self::$close_queue[$connkey]->dequeue();
             }
 
-            //当前池可以再添加资源用于分配         
+            //当前池可以再添加资源用于分配
             $resource = self::product($connkey, $argv);
             //product失败
             if(!$resource)
@@ -103,9 +103,9 @@ class MysqlPool
                 Log::info('product resource error:' . $connkey . $key);
                 return array('r' => 1);
             }
-            
+
             self::$working_pool[$connkey][$key] = $resource;
-                     
+
             return array(
                 'r' => 0,
                 'key' => $key,
@@ -114,10 +114,10 @@ class MysqlPool
         }
         else
         {
-            Log::error(__METHOD__ . " no resource can apply ", __CLASS__);           
+            Log::error(__METHOD__ . " no resource can apply ", __CLASS__);
             return array('r' => 1);
         }
-        
+
     }
 
     /**
@@ -152,12 +152,12 @@ class MysqlPool
                     {
                         //释放资源
                         self::freeResource($connkey, $key);
-                    }                    
+                    }
                 }
             }
         });
     }
-    
+
     /**
      * 定时回收多余空闲连接资源
      * @param string $connkey
@@ -171,8 +171,8 @@ class MysqlPool
             Log::debug('recovery timer tick start');
             foreach (self::$free_queue as $connkey => $queue)
             {
-                if($queue->isEmpty() || $queue->count() <= $argv['min']) 
-                    continue;               
+                if($queue->isEmpty() || $queue->count() <= $argv['min'])
+                    continue;
                 //空闲资源超过最小连接，关闭多余的数据库连接
                 for($i = $argv['min']; $i < $queue->count();)
                 {
@@ -182,7 +182,7 @@ class MysqlPool
                     self::$close_queue[$connkey]->enqueue($key);
                     unset(self::$working_pool[$connkey][$key]);
                     Log::info(__METHOD__ . ' key' . $key . ' queue count:' . $queue->count() . ' connect number:' . count(self::$working_pool[$connkey]));
-                }               
+                }
             }
         });
     }
@@ -195,9 +195,9 @@ class MysqlPool
     private static function product($connkey, $argv)
     {
         //防止并发出现已超过连接数
-        if(count(self::$working_pool[$connkey]) >= self::$config[$connkey]['max']) 
+        if(count(self::$working_pool[$connkey]) >= self::$config[$connkey]['max'])
             return false;
-        
+
         $resource = $argv['db']->connect($argv['config']);
         if(!$resource) return false;
         return array(
@@ -219,7 +219,7 @@ class MysqlPool
         self::$working_pool[$connkey][$key]['lifetime'] = microtime(true) + floatval($argv['timeout']);
         return self::$working_pool[$connkey][$key]['obj'];
     }
-    
+
     /**
      * 更新数据库连接
      * @param string $connkey
@@ -234,5 +234,6 @@ class MysqlPool
         self::$working_pool[$connkey][$key]['obj'] = $resource;
         self::$working_pool[$connkey][$key]['lifetime'] = microtime(true) + floatval($argv['timeout']);
         Log::info('更新working pool key:' . $connkey . $key);
+        return $resource;
     }
 }
