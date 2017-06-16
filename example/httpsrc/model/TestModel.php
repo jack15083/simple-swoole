@@ -54,18 +54,26 @@ class TestModel
     
     public function mysqliTest()
     {
-        $db = new \frame\database\dbObject('users1', ENVConst::getDBConf());
-        /* $test = array();
-        for($i = 0; $i < 10; $i++)
+        try
         {
-            $test[$i] = new \frame\database\dbObject('users1', ENVConst::getDBConf());
-        } */
-        //$string = $db->escape("abc'efg\r\n");
-        //Log::info(__METHOD__ . " escape string is " . $string);
-        $res = $db->query("select * from pay_ads");
-        $db->free();
-        Log::info(print_r($res, true));
-        return $res;
+            $db = new \frame\database\dbObject('users1', ENVConst::getDBConf());
+            /* $test = array();
+            for($i = 0; $i < 10; $i++)
+            {
+                $test[$i] = new \frame\database\dbObject('users1', ENVConst::getDBConf());
+            } */
+            //$string = $db->escape("abc'efg\r\n");
+            //Log::info(__METHOD__ . " escape string is " . $string);
+            $res = $db->query("select * from tch_teacher");
+            $db->free();
+            Log::info(print_r($res, true));
+            return $res;
+        }
+        catch (\Exception $e)
+        {
+            Log::error($e->getMessage());
+            return false;
+        }
     }
 
     

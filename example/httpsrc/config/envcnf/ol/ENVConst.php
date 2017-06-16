@@ -10,8 +10,8 @@ class ENVConst
     {
         return array(
             'host' => '127.0.0.1',
-            'username' => 'debian-sys-maint',
-            'password' => 'FgRRtKx8UVXpSI7c',
+            'username' => 'root',
+            'password' => 'jack1989',
             'db'=> 'users',
             'port' => 3306,
             'prefix' => '',

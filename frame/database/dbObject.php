@@ -20,13 +20,17 @@ class dbObject extends MysqliDb
         $this->getResource($connkey, $this->argv);
     }
     
-    public function connect($dbConfig)
+    public function connect()
     {
+        $dbConfig = $this->argv['config'];
         $mysqli = new \mysqli($dbConfig['host'], $dbConfig['username'], $dbConfig['password'], $dbConfig['db'], $dbConfig['port']);
         if ($mysqli->connect_error)
         {
             Log::error('mysql connect error ' . $mysqli->connect_error);
-            //throw new \Exception('mysql connect error' . $mysqli->connect_error);
+            throw new \Exception('mysql connect error' . $mysqli->connect_error);
+        }
+        if ($dbConfig['charset']) {
+            $mysqli->set_charset($dbConfig['charset']);
         }
         return $mysqli;
     }
@@ -79,6 +83,7 @@ class dbObject extends MysqliDb
         if (!$stmt = $this->mysqli()->prepare($this->_query)) {
             $msg = $this->mysqli()->error . " query: " . $this->_query;
             $num = $this->mysqli()->errno;
+            Log::debug(__METHOD__ . $msg);
             //retry twice connect
             if ($this->mysqli()->errno == 2013 || $this->mysqli()->errno == 2006)
             {
@@ -87,13 +92,13 @@ class dbObject extends MysqliDb
                 return $this->_prepareQuery();
             }
             $this->reset();
-            throw new Exception($msg, $num);
+            throw new \Exception($msg, $num);
         }
 
         if ($this->traceEnabled) {
             $this->traceStartQ = microtime(true);
         }
-
+        Log::debug(__METHOD__ . ' smt:' . print_r($stmt, true));
         return $stmt;
     }
     
@@ -114,7 +119,7 @@ class dbObject extends MysqliDb
         else
         {
             Log::error('get mysql resource error, connection key is ' . $connkey );
-            //throw new \Exception('get mysql resource error, connection key is ' . $connkey );
+            throw new \Exception('get mysql resource error, connection key is ' . $connkey );
         }
     }
 }

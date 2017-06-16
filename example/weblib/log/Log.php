@@ -10,7 +10,7 @@ namespace weblib\log;
 class Log
 {
 	// 日志存放路径
-	protected static $logpath = '/data/log/service/';
+	protected static $logpath = '/data/logs/server/';
 	
 	/**
 	 * 设置日志路径

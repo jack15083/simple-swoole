@@ -85,7 +85,7 @@ class MysqlPool
 
         elseif (count(self::$working_pool[$connkey]) < self::$config[$connkey]['max'])
         {
-            Log::debug(__METHOD__ . " below max, current count:" . $key, __CLASS__);
+            Log::debug(__METHOD__ . " below max, current count:" . count(self::$working_pool[$connkey]), __CLASS__);
             if(self::$close_queue[$connkey]->isEmpty())
             {
                 $key = count(self::$working_pool[$connkey]);

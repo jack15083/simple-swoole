@@ -4,7 +4,7 @@
 class  UserConfig
 {
     public static $UserConf = array(
-        'log' => array('path' => '/data/log/', 'loggerName' => 'httpServer', 'level' => 'error'),
+        'log' => array('path' => '/data/logs/', 'loggerName' => 'httpServer', 'level' => 'error'),
         'register' => array(
             //      'init' => 'LongUrl2ShortInit',
             //    'protocol' => 'testProtocol',

@@ -22,6 +22,7 @@ class TestController extends \frame\base\Controller
         Log::info("action db test");
         $model = new TestModel();
         $data = $model->dbTest();
+        $this->header("Content-Type", "text/html; charset=utf-8");
         $this ->send(print_r($data, true));
     }
     
@@ -29,6 +30,7 @@ class TestController extends \frame\base\Controller
         Log::info("action db test");
         $model = new TestModel();
         $data = $model->mysqliTest();
+        $this->header("Content-Type", "text/html; charset=utf-8");
         $this ->send(print_r($data, true));
     }
 
