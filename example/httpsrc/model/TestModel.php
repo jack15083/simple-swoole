@@ -56,7 +56,7 @@ class TestModel
     {
         try
         {
-            $db = new \frame\database\dbObject('users1', ENVConst::getDBConf());
+            $db = new \frame\database\dbObject(ENVConst::getDBConf());
             /* $test = array();
             for($i = 0; $i < 10; $i++)
             {
@@ -64,7 +64,7 @@ class TestModel
             } */
             //$string = $db->escape("abc'efg\r\n");
             //Log::info(__METHOD__ . " escape string is " . $string);
-            $res = $db->query("select * from tch_teacher");
+            $res = $db->query("select * from tch_teacher where id = 1");
             $db->free();
             Log::info(print_r($res, true));
             return $res;

@@ -9,7 +9,7 @@ class dbObject extends MysqliDb
     public $reskey;
     public $argv;
     
-    public function __construct($connkey, $dbConfig) 
+    public function __construct($dbConfig)
     {
         parent::__construct($dbConfig['host'], $dbConfig['username'], $dbConfig['password'], $dbConfig['db'], $dbConfig['port']);
         $this->argv['config'] = $dbConfig;
@@ -17,7 +17,8 @@ class dbObject extends MysqliDb
         $this->argv['max'] = $dbConfig['pool']['max'];
         $this->argv['min'] = $dbConfig['pool']['min'];
         $this->argv['db'] = $this;
-        $this->getResource($connkey, $this->argv);
+        if(empty($dbConfig['instance'])) $dbConfig['instance'] = 'default';
+        $this->getResource($dbConfig['instance'], $this->argv);
     }
     
     public function connect()
@@ -81,9 +82,8 @@ class dbObject extends MysqliDb
     protected function _prepareQuery()
     {
         if (!$stmt = $this->mysqli()->prepare($this->_query)) {
-            $msg = $this->mysqli()->error . " query: " . $this->_query;
+            $msg = __METHOD__ . $this->mysqli()->error . " query: " . $this->_query;
             $num = $this->mysqli()->errno;
-            Log::debug(__METHOD__ . $msg);
             //retry twice connect
             if ($this->mysqli()->errno == 2013 || $this->mysqli()->errno == 2006)
             {

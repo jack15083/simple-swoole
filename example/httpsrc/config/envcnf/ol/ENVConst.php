@@ -18,8 +18,8 @@ class ENVConst
             'charset' => 'utf8',
             'instance' => 'users',
             'pool' => [
-                'max' => 15, //最大连接数15
-                'min' => 3, //最小连接数
+                'max' => 5, //最大连接数15
+                'min' => 1, //最小连接数
                 'timeout' => 30  //连接过期时间30S
             ]
         );

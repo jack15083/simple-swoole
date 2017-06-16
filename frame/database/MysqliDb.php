@@ -1843,10 +1843,8 @@ class MysqliDb
             $msg = $this->mysqli()->error . " query: " . $this->_query;
             $num = $this->mysqli()->errno;
             $this->reset();
-            Log::error(__METHOD__ . ' error: ' . $msg);
             throw new \Exception($msg, $num);
         }
-        Log::debug(__METHOD__ . print_r($stmt, true));
         if ($this->traceEnabled) {
             $this->traceStartQ = microtime(true);
         }
