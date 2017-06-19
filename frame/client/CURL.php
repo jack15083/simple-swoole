@@ -382,6 +382,12 @@ class CURL
     {
         $this->reqHeader[$k] = $v;
     }
+
+    function setHeaders($headers)
+    {
+        $this->reqHeader = array_merge($this->reqHeader, $headers);
+    }
+
     function addHeaders(array $header)
     {
         $this->reqHeader = array_merge($this->reqHeader, $header);

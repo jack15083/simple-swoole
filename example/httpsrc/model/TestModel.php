@@ -81,12 +81,12 @@ class TestModel
     {
         $postData = array();
         $url = "http://www.kaike.la";
-        $hc = new frame\client\Http($url);
-        $hc->setTimeout(5);// 以秒为单位 设置长一些 有些请求会超时
+        $hc = new frame\client\CURL();
         $header = array(
             'User-Agent' => "firefox-agent",
         );
-        $res = $hc->get([], $header);
+        $hc->setHeaders($header);
+        $res = $hc->get($url);
         /*while (true) {
             if(frame\client\Http::$rsp[$res->key])
                 return frame\client\Http::$rsp[$res->key]

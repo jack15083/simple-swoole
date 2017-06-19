@@ -1,5 +1,5 @@
 <?php 
-namespace frame\client;
+namespace frame\coroutine;
 
 class redis 
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace frame\client;
+namespace frame\coroutine;
 
 
 class Http extends Base

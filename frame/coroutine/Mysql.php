@@ -1,6 +1,6 @@
 <?php
 
-namespace frame\client;
+namespace frame\coroutine;
 
 use frame\log\Log;
 class Mysql extends Base {
