@@ -1,0 +1,16 @@
+upstream local.zsf.com {
+    server 127.0.0.1:10088;
+}
+
+server {
+    listen 0.0.0.0:80;
+    server_name local.zsf.com;
+    index index.php;
+    location / {
+        proxy_set_header Host local.zsf.com;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_pass http://local.zsf.com;
+        proxy_connect_timeout 5s;
+    }
+}
