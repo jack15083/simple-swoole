@@ -50,9 +50,9 @@ class Http extends Base
     private $curChunkLen = 0;
 
     private $headerBuf = '';
-    
+
     private $client;
-    
+
     private $header;
 
     /**
@@ -92,7 +92,7 @@ class Http extends Base
         $this->host = $info['host'];
         $this->querystring= isset($info['query']) ? $info['query'] : '';
         $this->key = md5($uri . microtime(true) . rand(0, 10000));
-        
+
     }
 
     /**
@@ -142,26 +142,26 @@ class Http extends Base
         //\frame\log\Log::debug(__METHOD__ . " httpclient == " . print_r($this, true), __CLASS__);
         return $this->send();
     }
-    
+
     public function send()
     {
-        if($this->port == '443') 
+        if($this->port == '443')
             $cli = new \Swoole\Coroutine\Http\Client($this->host, $this->port, true);
-        else 
+        else
             $cli = new \Swoole\Coroutine\Http\Client($this->host, $this->port);
-        
+
         $cli->setHeaders($this->header);
         $cli->set([ 'timeout' => $this->timeout]);
         if(!empty($this->querystring)) $this->path = $this->path .'?' . $this->querystring;
-        
-        if($this->method == 'GET') 
-            $cli->get($this->path);            
-        else 
+
+        if($this->method == 'GET')
+            $cli->get($this->path);
+        else
             $cli->post($this->path, $this->postdata);
-        
+
         $res = $cli->body;
         $cli->close();
-        
+
         return $res;
     }
 
@@ -350,7 +350,7 @@ class Http extends Base
         foreach ($headerArray as $ha_k => $ha_v) {
             $headers .= "\r\n{$ha_k}: {$ha_v}";
         }
-        
+
         $this->header = $headers;
 
 
