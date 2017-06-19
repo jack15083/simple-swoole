@@ -80,13 +80,17 @@ class TestModel
     public function httpTest()
     {
         $postData = array();
-        $url = "http://www.baidu.com";
+        $url = "http://www.kaike.la";
         $hc = new frame\client\Http($url);
-        $hc->setTimeout(30);// 以秒为单位 设置长一些 有些请求会超时
+        $hc->setTimeout(5);// 以秒为单位 设置长一些 有些请求会超时
         $header = array(
             'User-Agent' => "firefox-agent",
         );
         $res = $hc->get([], $header);
+        /*while (true) {
+            if(frame\client\Http::$rsp[$res->key])
+                return frame\client\Http::$rsp[$res->key]
+        }*/
         return $res;
     }
 
