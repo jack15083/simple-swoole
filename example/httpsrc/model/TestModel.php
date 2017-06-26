@@ -66,7 +66,6 @@ class TestModel
             //Log::info(__METHOD__ . " escape string is " . $string);
             $res = $db->query("select * from tch_teacher where id = 1");
             $db->free();
-            Log::info(print_r($res, true));
             return $res;
         }
         catch (\Exception $e)

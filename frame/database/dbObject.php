@@ -81,16 +81,16 @@ class dbObject extends MysqliDb
      */
     protected function _prepareQuery()
     {
-        if (!$stmt = $this->mysqli()->prepare($this->_query)) {
-            $msg = __METHOD__ . $this->mysqli()->error . " query: " . $this->_query;
-            $num = $this->mysqli()->errno;
+        if (!$stmt = @$this->mysqli()->prepare($this->_query)) {
             //retry twice connect
-            if ($this->mysqli()->errno == 2013 || $this->mysqli()->errno == 2006)
+            if (!$this->_mysqli || !$this->_mysqli->errno || $this->_mysqli->errno == 2013 || $this->_mysqli->errno == 2006)
             {
                 $db = MysqlPool::updateConnect($this->connkey, $this->reskey, $this->argv);
                 $this->_mysqli = $db;
                 return $this->_prepareQuery();
             }
+            $msg = __METHOD__ . ' error: ' . $this->_mysqli->error . " query: " . $this->_query;
+            $num = $this->_mysqli->errno;
             $this->reset();
             throw new \Exception($msg, $num);
         }
@@ -106,6 +106,14 @@ class dbObject extends MysqliDb
     {
         MysqlPool::freeResource($this->connkey, $this->reskey);
     }
+
+    public function close()
+    {
+        if ($this->_mysqli) {
+            @$this->_mysqli->close();
+            $this->_mysqli = null;
+        }
+    }
     
     private function getResource($connkey, $argv)
     {
@@ -120,6 +128,23 @@ class dbObject extends MysqliDb
         {
             Log::error('get mysql resource error, connection key is ' . $connkey );
             throw new \Exception('get mysql resource error, connection key is ' . $connkey );
+        }
+    }
+
+    /**
+     * Close connection
+     *
+     * @return void
+     */
+    public function __destruct()
+    {
+        if ($this->isSubQuery) {
+            return;
+        }
+
+        if ($this->_mysqli) {
+            @$this->_mysqli->close();
+            $this->_mysqli = null;
         }
     }
 }

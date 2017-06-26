@@ -48,7 +48,7 @@ class MysqlPool
         {
             Log::debug(__METHOD__ . " schedule ");
             //定时更新过期资源
-            self::schedule($connkey, $argv);
+            //self::schedule($connkey, $argv);
             //定时回收数据库连接资源
             self::recovery($connkey, $argv);
             self::$timer_start = true;
@@ -181,7 +181,7 @@ class MysqlPool
                     self::$working_pool[$connkey][$key]['obj']->close();
                     self::$close_queue[$connkey]->enqueue($key);
                     unset(self::$working_pool[$connkey][$key]);
-                    Log::info(__METHOD__ . ' key' . $key . ' queue count:' . $queue->count() . ' connect number:' . count(self::$working_pool[$connkey]));
+                    Log::debug(__METHOD__ . ' key' . $key . ' queue count:' . $queue->count() . ' connect number:' . count(self::$working_pool[$connkey]));
                 }
             }
         });
