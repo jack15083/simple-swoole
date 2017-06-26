@@ -4,7 +4,7 @@ namespace frame;
 use frame\base\UserConfig;
 class App
 {
-    public static function   createApplication($config = array())
+    public static function createApplication($config = array())
     {
         //初始化log组件
         $userConfig = new UserConfig();
