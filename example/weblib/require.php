@@ -5,4 +5,4 @@
  * Date: 2017/6/16
  * Time: 10:33
  */
-require_once 'log/Log.php';
+require_once dirname(__FILE__) . '/log/Log.php';

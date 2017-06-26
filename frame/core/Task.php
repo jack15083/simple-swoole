@@ -3,7 +3,7 @@ namespace frame\core;
 
 class Task
 {
-    private $data;
+    protected $data;
 
     public function __construct($data = '')
     {
