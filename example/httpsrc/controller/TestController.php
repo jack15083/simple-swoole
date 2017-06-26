@@ -34,4 +34,8 @@ class TestController extends \frame\base\Controller
         $this ->send(print_r($data, true));
     }
 
+    public function actionTestState()
+    {
+        $this->display('test');
+    }
 }

@@ -143,7 +143,7 @@ class Controller
     
     private function getViewFile($viewName)
     {
-        $viewFile = dirname(__FILE__) . '/../views/' . $viewName;
+        $viewFile = APP_PATH . '/views/' . $viewName;
         if (is_file($viewFile . '.php'))
             return $viewFile . '.php';
         else
