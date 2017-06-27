@@ -45,9 +45,9 @@ int main(int argc,char*argv[])
         servname=argv[1];
         servcmd=argv[2];
     };
-  //  cout << " serve name is "<<servname << " and cmd is "<<servcmd<<endl;
-    string cmd = php + " ../../shell/server.php " + (servname==NULL?" ":servname) + "  "+ (servcmd==NULL?" ":servcmd) ;
-   // cout << cmd << endl;
+    //  cout << " serve name is "<<servname << " and cmd is "<<servcmd<<endl;
+    string cmd = php + " ../frame/shell/server.php " + (servname==NULL?" ":servname) + "  "+ (servcmd==NULL?" ":servcmd) ;
+    // cout << cmd << endl;
     fp=popen(cmd.c_str(),"r");
     
     while(!feof(fp))
