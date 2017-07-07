@@ -40,11 +40,11 @@ spl_autoload_register(function ($class) {
 
 //读取配置文件 然后启动对应的server
 $configPath = ((dirname(FRAMEWORKBASEPATH))) . '/conf/' . $name . '.ini';//获取配置地址
+
 if (!file_exists($configPath)) {
     throw new \Exception("[error] profiles [$configPath] can not be loaded");
 }
 $config = parse_ini_file($configPath, true);
-
 $loader->addClassMap(generateClassMapFiles(new RecursiveDirectoryIterator(dirname($config['server']['root']))));
 
 $server = new frame\core\Server();

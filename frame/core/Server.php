@@ -149,7 +149,6 @@ class Server
             default:
                 $this->sockType = SWOOLE_SOCK_TCP;
 
-
         };
 
         // Creating a swoole server resource object
@@ -269,7 +268,7 @@ class Server
                 try {
                     call_user_func([$o, 'start']);
                 } catch (\Exception $e) {
-                    Log::error("error in runnable: $runnable, worker id: $workerId, e: " . print_r($e, true));
+                    Log::error("error in runnable: $runnable, worker id: $workerId, e: " . print_r($e->getMessage(), true));
                 }
             });
             

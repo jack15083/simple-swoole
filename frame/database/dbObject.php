@@ -36,6 +36,15 @@ class dbObject extends MysqliDb
         return $mysqli;
     }
 
+    /**
+     * 重新连接
+     */
+    public function retryConnect()
+    {
+        $db = MysqlPool::updateConnect($this->connkey, $this->reskey, $this->argv);
+        $this->_mysqli = $db;
+    }
+
     public function mysqli()
     {
         if (!$this->_mysqli) {
@@ -65,8 +74,7 @@ class dbObject extends MysqliDb
         //retry twice connect
         if ($this->mysqli()->errno == 2013 || $this->mysqli()->errno == 2006)
         {
-            $db = MysqlPool::updateConnect($this->connkey, $this->reskey, $this->argv);
-            $this->_mysqli = $db;
+            $this->retryConnect();
             return $this->queryUnprepared($query);
         }
         // return stmt for future use
@@ -85,8 +93,7 @@ class dbObject extends MysqliDb
             //retry twice connect
             if (!$this->_mysqli || !$this->_mysqli->errno || $this->_mysqli->errno == 2013 || $this->_mysqli->errno == 2006)
             {
-                $db = MysqlPool::updateConnect($this->connkey, $this->reskey, $this->argv);
-                $this->_mysqli = $db;
+                $this->retryConnect();
                 return $this->_prepareQuery();
             }
             $msg = __METHOD__ . ' error: ' . $this->_mysqli->error . " query: " . $this->_query;

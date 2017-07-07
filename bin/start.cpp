@@ -48,8 +48,8 @@ int main(int argc,char*argv[])
     //  cout << " serve name is "<<servname << " and cmd is "<<servcmd<<endl;
     string cmd = php + " ../frame/shell/server.php " + (servname==NULL?" ":servname) + "  "+ (servcmd==NULL?" ":servcmd) ;
     // cout << cmd << endl;
-    fp=popen(cmd.c_str(),"r");
-    
+    fp = popen(cmd.c_str(), "r");
+
     while(!feof(fp))
     {
         fgets(buffer,sizeof(buffer),fp);
