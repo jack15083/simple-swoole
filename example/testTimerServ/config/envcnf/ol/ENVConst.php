@@ -9,14 +9,14 @@ class ENVConst
     public static function getDBConf()  //一些配置
     {
         return array(
-            'host' => '127.0.0.1',
+            'host' => '10.0.0.49',
             'username' => 'root',
-            'password' => 'jack1989',
-            'db'=> 'users',
+            'password' => 'mst112233',
+            'db'=> 'kaikela_market',
             'port' => 3306,
             'prefix' => '',
             'charset' => 'utf8',
-            'instance' => 'users',
+            'instance' => 'kaikela_market',
             'pool' => [
                 'max' => 5, //最大连接数15
                 'min' => 1, //最小连接数

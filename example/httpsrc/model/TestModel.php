@@ -75,6 +75,22 @@ class TestModel
         }
     }
 
+    public function getSchools($areaId)
+    {
+         try
+         {
+             $db = new \frame\database\dbObject(ENVConst::getIkukoDBConf());
+
+             $res = $db->query("SELECT * FROM T_SCHOOL_DEFINED WHERE SCHOOL_PLACE_ID = 325689 AND PHASE = 1");
+             $db->free();
+             return $res;
+         }
+         catch (\Exception $e)
+         {
+             Log::error($e->getMessage());
+             return false;
+         }
+    }
     
     public function httpTest()
     {

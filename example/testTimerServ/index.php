@@ -4,5 +4,9 @@
 //加载环境变量    通过 $_SERVER['NEWAPI_ENV']来加载不同的配置文件 require_once dirname(__FILE__) . '/config/envcnf/'. $_SERVER['SERV_ENV'] .'/ENVConst.php';
 //require_once dirname(__FILE__) . '/config/' . $_SERVER['SERV_ENV'] . '/ENVConst.php';
 
-//define('APP_PATH', dirname(__FILE__));
-return \frame\App::createApplication(); //返回
+define('APP_PATH', dirname(__FILE__));
+require_once APP_PATH . '/config/envcnf/ol/ENVConst.php';
+require_once dirname(APP_PATH) . '/weblib/require.php';
+$appConfig = require_once(APP_PATH . '/config/UserConfig.php');
+date_default_timezone_set('PRC');
+return \frame\App::createApplication($appConfig); //返回

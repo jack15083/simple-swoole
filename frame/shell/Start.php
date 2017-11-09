@@ -47,6 +47,13 @@ if (!file_exists($configPath)) {
 $config = parse_ini_file($configPath, true);
 $loader->addClassMap(generateClassMapFiles(new RecursiveDirectoryIterator(dirname($config['server']['root']))));
 
+//生成日志路径
+$logDir = dirname($config['setting']['log_file']);
+if(!is_dir($logDir))
+{
+    @mkdir($logDir);
+}
+
 $server = new frame\core\Server();
 $server->servType = $config['server']['type'];
 //合并config 只读一次
@@ -65,7 +72,7 @@ function generateClassMapFiles($dir) {
                 $files = array_merge($files, generateClassMapFiles($dir->getChildren()));
             };
         }else if($dir->isFile()){
-            $files[$dir -> getBasename(".php")] = $dir->getPathName();
+            $files[$dir->getBasename(".php")] = $dir->getPathName();
         }
     }
     return $files;

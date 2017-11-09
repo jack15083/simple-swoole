@@ -130,6 +130,14 @@ class dbObject extends MysqliDb
         {
             $this->reskey = $res['key'];
             $this->_mysqli = $res['data'];
+            try
+            {
+                $this->_mysqli->real_escape_string("test");
+            }
+            catch (\Exception $e)
+            {
+                $this->retryConnect();
+            }
         }
         else
         {
@@ -145,13 +153,14 @@ class dbObject extends MysqliDb
      */
     public function __destruct()
     {
-        if ($this->isSubQuery) {
+        return;
+        /*if ($this->isSubQuery) {
             return;
-        }
+        }*/
 
-        if ($this->_mysqli) {
+        /*if ($this->_mysqli) {
             @$this->_mysqli->close();
             $this->_mysqli = null;
-        }
+        }*/
     }
 }

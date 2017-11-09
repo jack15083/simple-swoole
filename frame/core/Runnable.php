@@ -13,10 +13,11 @@ abstract class Runnable
     private $className;
 
     /**
-     * @param $interval interval in millis
+     * @param $interval interval in seconds
      */
-    public function __construct($taskConf, $interval = 30000, $logLevel = 'error', $num = 1)
+    public function __construct($taskConf, $interval = 30, $logLevel = 'error', $num = 1)
     {
+        $interval = $interval * 1000;
         $this->workerId = $taskConf['workerId'];
         $this->className = $taskConf['className'];
         $this->interval = $interval;

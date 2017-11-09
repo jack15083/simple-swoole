@@ -261,9 +261,11 @@ class Server
                 Log::error($className . " must have start method");
                 return;
             }
-            
-            $conf = ['path' => '/data/logs/server/', 'loggerName' => $className, 'level' => $o->logLevel, 'decorators' => ['backtrace']];
-            Log::create($conf);
+
+            Log::setLogLevel($o->logLevel);
+            Log::setLoggerName($className);
+            Log::setDecorators(['backtrace']);
+
             swoole_timer_tick($o->interval, function () use ($workerId, $runnable, $o) {
                 try {
                     call_user_func([$o, 'start']);
