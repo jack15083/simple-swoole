@@ -4,6 +4,12 @@ namespace frame\base;
 
 class Protocol
 {
+    public $router;
+
+    public function __construct(Router $router) {
+        $this->router = $router;
+    }
+
     public function onReceive($server, $clientId, $fromId, $data)
     {
 

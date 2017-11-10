@@ -15,7 +15,9 @@ class TestController extends \frame\base\Controller
     }
 
     public function actionTest() {
-        $this->send('Hello World');
+        $data = $this->request->data;
+
+        $this->send(print_r($data, true));
     }
     
     public function actionDbtest() {
