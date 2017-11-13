@@ -52,7 +52,7 @@ class FileCache
             $this->delete($key);
             return false;
         }
-        
+
         return $data['value'];
     }
 
