@@ -37,7 +37,7 @@ class dbObject extends MysqliDb
     }
 
     /**
-     * 重新连接
+     * Retry connect
      */
     public function retryConnect()
     {

@@ -202,7 +202,7 @@ class MysqlPool
         if(!$resource) return false;
         return array(
             'obj' => $resource,                                             //实例
-            'lifetime' => microtime(true) + floatval($argv['timeout']),   //生命期
+            'lifetime' => microtime(true) + ((float) $argv['timeout']),   //生命期
             'status' => 1,                                                //状态 1 在用 0 空闲
         );
     }
@@ -216,7 +216,7 @@ class MysqlPool
     private static function update($connkey, $key, $argv)
     {
         self::$working_pool[$connkey][$key]['status'] = 1;
-        self::$working_pool[$connkey][$key]['lifetime'] = microtime(true) + floatval($argv['timeout']);
+        self::$working_pool[$connkey][$key]['lifetime'] = microtime(true) + ((float) $argv['timeout']);
         return self::$working_pool[$connkey][$key]['obj'];
     }
 
@@ -232,7 +232,7 @@ class MysqlPool
         $argv['db']->close();
         $resource = $argv['db']->connect($argv['config']);
         self::$working_pool[$connkey][$key]['obj'] = $resource;
-        self::$working_pool[$connkey][$key]['lifetime'] = microtime(true) + floatval($argv['timeout']);
+        self::$working_pool[$connkey][$key]['lifetime'] = microtime(true) + ((float) $argv['timeout']);
         Log::info('更新working pool key:' . $connkey . $key);
         return $resource;
     }

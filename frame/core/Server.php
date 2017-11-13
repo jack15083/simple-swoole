@@ -17,7 +17,7 @@ class Server
     protected $udpListener;
     protected $tcpListener;
 
-    public $config = array(); //修改为public ---mark  20150620
+    public $config = array();
     protected $setting = array();
     protected $runPath = '/tmp';
     protected $masterPidFile;
@@ -29,11 +29,11 @@ class Server
     public $servType;
 
 
-    private $preSysCmd = '%+-swoole%+-';
+    //private $preSysCmd = '%+-swoole%+-';
     private $requireFile = '';
 
-    // public $serverClass;  //修改为public ---mark  20150620
-    public $protocol;  //修改为public ---mark  20150620
+    // public $serverClass;
+    public $protocol;
 
     private $timers = [];
 
@@ -89,6 +89,7 @@ class Server
         if (is_array($config)) {
             $this->config = array_merge($this->config, $config);
         }
+
         return true;
     }
 
@@ -158,9 +159,9 @@ class Server
         //提供给用户设定系统全局变量
         $this->sw->userParams = array();
         //一个临时的兼容
-        $this->setting['worker_num'] = intval($this->setting['worker_num']);
-        $this->setting['dispatch_mode'] = intval($this->setting['dispatch_mode']);
-        $this->setting['daemonize'] = intval($this->setting['daemonize']);
+        $this->setting['worker_num'] = (int) $this->setting['worker_num'];
+        $this->setting['dispatch_mode'] = (int) $this->setting['dispatch_mode'];
+        $this->setting['daemonize'] = (int) $this->setting['daemonize'];
 
         // $this->sw = new \swoole_http_server($this->host, $this->port, $this->mode, $this->sockType);
         // Setting the runtime parameters

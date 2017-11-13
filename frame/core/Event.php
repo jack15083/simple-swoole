@@ -24,7 +24,7 @@ class Event
     }
 
     /**
-     * 打印Log信息
+     * output log
      * @param $msg
      * @param string $type
      */
@@ -82,32 +82,29 @@ class Event
     public function onRequest(Request $request, Response $response)
     {
         $route = $this->protocol->onRoute($request);
-        //这个地方重新设计，接入新的路由机制
-        if(!$route){
-            $class='IndexController';
-            $fun='actionIndex';
-            $data=array();
-        }else{
-            $class= $route->class;
-            $fun=$route->action;
-            $data=$route->data;
+        $class = $route->class;
+        $fun   = $route->action;
+        $data  = $route->data;
+
+        if ((!class_exists($class) || !method_exists(($class), ($fun)))) {
+            if ($response->servType=='http'){
+                $response->status(404);
+            };
+
+            $response->send('not found');
+            return;
         }
+
         if (is_array($request->data))
-            if($response->servType=='http'){
-                if(isset($request->data['get'])) $request->data['get'] = array_merge((array)$request->data['get'], $data);
+            if ($response->servType == 'http') {
+                if (isset($request->data['get'])) $request->data['get'] = array_merge((array)$request->data['get'], $data);
                 else $request->data['get'] = $data;
-            }else{
+            } else {
                 $request->data = array_merge($request->data, $data);
             }
         else
             $request->data =$data;
-        if((!class_exists($class) || !method_exists(($class), ($fun)))){
-                if($response->servType=='http'){
-                    $response->status(404);
-                };
-                $response->send('not found');
-                return;
-        }
+
         $obj = new $class($request, $response);
         $obj->run($fun);
     }

@@ -18,11 +18,12 @@ abstract class Runnable
     public function __construct($taskConf, $interval = 30, $logLevel = 'error', $num = 1)
     {
         $interval = $interval * 1000;
-        $this->workerId = $taskConf['workerId'];
+
+        $this->workerId  = $taskConf['workerId'];
         $this->className = $taskConf['className'];
-        $this->interval = $interval;
-        $this->logLevel = $logLevel;
-        $this->num = $num;
+        $this->interval  = $interval;
+        $this->logLevel  = $logLevel;
+        $this->num       = $num;
         $this->subTaskId = ($this->workerId) % $num;
     }
 

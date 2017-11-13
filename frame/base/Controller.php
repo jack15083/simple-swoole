@@ -11,67 +11,81 @@ class Controller
     
     private $_val = array();
 
-    function __construct(Request $request, Response $response)
-    {
+    function __construct(Request $request, Response $response) {
         $this->request = $request;
         $this->response = $response;
     }
 
-    public function getResponse()
-    {
+    /**
+     * Get response from server
+     * @return Response
+     */
+    public function getResponse() {
         return $this->response;
     }
 
-    public function getRequest()
-    {
+    /**
+     * Get request data
+     * @return Request
+     */
+    public function getRequest() {
         return $this->request;
     }
 
-
-    public function send($data)
-    {
+    /**
+     * Send data to client
+     * @param $data
+     */
+    public function send($data) {
         $this->response->send($data);
     }
-    
 
-
-    public function  sendto($ip, $port, $data, $ipv6 = false)
-    {
+    /**
+     * Send data to ip client
+     * @param $ip
+     * @param $port
+     * @param $data
+     * @param bool $ipv6
+     */
+    public function sendto($ip, $port, $data, $ipv6 = false) {
         $this->response->sendto($ip, $port, $data, $ipv6);
     }
 
-    //http
-    public function  header($key, $value)
-    {
+    /**
+     * Response header to client
+     * @param $key
+     * @param $value
+     */
+    public function header($key, $value) {
         $this->response->header($key, $value);
     }
 
-    public function  status($http_status_code)
-    {
+    public function status($http_status_code) {
         $this->response->status($http_status_code);
     }
 
-    public function  cookie($key, $value = '', $expire = 0, $path = '/', $domain = '', $secure = false, $httponly = false)
-    {
+    public function  cookie($key, $value = '', $expire = 0, $path = '/', $domain = '', $secure = false, $httponly = false) {
         $this->response->cookie($key, $value, $expire, $path, $domain, $secure, $httponly);
     }
 
-    //暂留
-    public function viewRender($data, $uri)
-    {
+    /**
+     * @param $data
+     * @param $uri
+     */
+    public function viewRender($data, $uri) {
 
     }
 
-
-    private function init()
-    {
+    private function init() {
         return;
     }
 
 
-    //执行函数 实现
-    public function run($actionName)
-    {
+    /**
+     * run action
+     * @param $actionName
+     */
+    public function run($actionName) {
         $this->init();
         $this->{$actionName}();
         return;
@@ -85,8 +99,7 @@ class Controller
         $this->response->protocol = $protocol;
     }
     
-    private function renderFile($_viewFile, $_data = null)
-    {
+    private function renderFile($_viewFile, $_data = null) {
         if (is_array($_data)) {
             $this->_val = array_merge($this->_val, $_data);
             extract($_data, EXTR_PREFIX_SAME, 'data');
@@ -102,37 +115,32 @@ class Controller
     }
     
     /**
-     * 模板变量赋值
+     * assign template val
      * @param mixed $name
      * @param mixed $value
      */
-    public function assign($name, $value = '')
-    {
-        if (is_array($name))
-        {
+    public function assign($name, $value = '') {
+        if (is_array($name)) {
             $this->_var = array_merge($this->_var, $name);
         }
-        elseif (is_object($name))
-        {
+        elseif (is_object($name)) {
             foreach ($name as $key => $val)
             {
                 $this->_var[$key] = $val;
             }
         }
-        else
-        {
+        else {
             $this->_var[$name] = $value;
         }
     }
     
     /**
-     * 模版输出
+     * output template
      * @param string $view
      * @param string $data
      * @throws \Exception
      */
-    public function display($view, $data = null)
-    {        
+    public function display($view, $data = null) {
         if (($viewFile = $this->getViewFile($view)) === false) {
             throw new \Exception("Cannot find the requested view '{$view}'.");
         }
@@ -141,8 +149,7 @@ class Controller
         $this->send($output);
     }
     
-    private function getViewFile($viewName)
-    {
+    private function getViewFile($viewName) {
         $viewFile = APP_PATH . '/views/' . $viewName;
         if (is_file($viewFile . '.php'))
             return $viewFile . '.php';

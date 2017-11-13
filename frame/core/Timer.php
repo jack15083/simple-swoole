@@ -5,7 +5,6 @@ use \frame\log\Log;
 
 class Timer
 {
-
     public static function add($timeout, $callback, $params, $repeat)
     {
 		Log::info(__METHOD__ . " add timer " , __CLASS__);
