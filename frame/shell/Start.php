@@ -2,12 +2,12 @@
 
 //读取配置，启动对应的server 根据传进来的server名字 已经知道协议类型
 // 定义根目录
-define('FRAMEWORKBASEPATH', dirname(dirname(__FILE__)));
-$loader = require_once dirname(FRAMEWORKBASEPATH) . '/vendor/autoload.php';
+define('FRAMEWORKBASEPATH', dirname(__DIR__));
+$loader = require dirname(FRAMEWORKBASEPATH) . '/vendor/autoload.php';
 require_once dirname(FRAMEWORKBASEPATH) . '/frame/App.php';
 
 //读取配置
-$cmd = $argv[1];   //cmd name
+$cmd  = $argv[1];   //cmd name
 $name = $argv[2];
 if (!$cmd || !$name) {
     echo "please input cmd and server name: start all,start testserv ";

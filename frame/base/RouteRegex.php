@@ -2,8 +2,6 @@
 
 namespace frame\base;
 
-use frame\log\Log;
-
 class RouteRegex extends Protocol
 {
     /**
@@ -11,8 +9,8 @@ class RouteRegex extends Protocol
      * @param $req
      * @return bool|Route
      */
-    public function onRoute($req) {
-
+    public function onRoute($req)
+    {
         $uri    = $req->data['server']['request_uri'];
         $method = $req->data['server']['request_method'];
         $path   = '/' . trim($uri, '/');
@@ -38,10 +36,12 @@ class RouteRegex extends Protocol
      * @param $routes
      * @return mixed
      */
-    protected function getRouteRegx($method, $path, $routes) {
+    protected function getRouteRegx($method, $path, $routes)
+    {
         $pathArr = explode('/', $path);
 
-        foreach ($routes as $uri => $row) {
+        foreach ($routes as $uri => $row)
+        {
             preg_match_all('/\{(\w+)\}/', $uri, $matches);
 
             if (empty($matches[1]))
