@@ -17,6 +17,9 @@ php server.php testHttpServ start
 ````
 
 # http测试站点配置
+
+conf/testHttpServ.ini
+
 ````
 [server]
 
