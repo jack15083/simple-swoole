@@ -69,7 +69,7 @@ open_tcp_nodelay = true
 open_eof_check = false
 open_eof_split = false
 ````
-#路由
+# 路由
 
 example/httpsrc/route/web.php
 
@@ -80,7 +80,7 @@ $router->get('/test.html', 'TestController@actionTest');
 $router->get('/test/{username}/{id2}/{id3}', 'TestController@actionTest');
 ````
 
-#控制器
+# 控制器
 example/httpsrc/controller
 
 ````
@@ -131,7 +131,7 @@ class TestController extends Controller
 
 ````
 
-#Model
+# Model
 ````
 <?php
 
@@ -247,7 +247,7 @@ class TestModel
 }
 ````
 
-#Timer 定时器
+# Timer 定时器
 
 /example/timeServ/timer
 
