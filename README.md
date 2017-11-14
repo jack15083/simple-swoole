@@ -1,7 +1,7 @@
-# Zeng-Swoole-Framework
-An php mvc framewrok base Swoole
+# Sample-Swoole
+An sample php mvc framewrok base of Swoole
 # 安装
-基于linux环境，运行需要先安装swoole 2.0扩展
+基于linux环境，运行需要先安装swoole 1.8 版本以上扩展，支持php 7.0
 
 支持PHP7 
 
@@ -364,6 +364,10 @@ class Statistics extends BaseTimer {
     
 }
 ````
+
+License
+------------
+`sample-swoole` is licensed under [The MIT License (MIT)](LICENSE).
 
 
 
