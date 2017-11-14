@@ -1,8 +1,9 @@
 <?php
 
 use weblib\log\Log;
+use frame\base\Controller;
 
-class TestController extends \frame\base\Controller
+class TestController extends Controller
 {
 
     public function actionHttptest()
