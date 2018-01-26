@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * base request class
+ * @author zengfanwei
+ */
 namespace frame\base;
 
 

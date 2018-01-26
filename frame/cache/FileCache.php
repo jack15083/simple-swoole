@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Files cache
+ * @author zengfanwei
+ */
 namespace frame\cache;
 
 class FileCache 

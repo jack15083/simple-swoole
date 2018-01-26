@@ -1,11 +1,14 @@
 <?php
 
+/**
+ * Base controller class
+ * @author zengfanwei
+ */
 namespace frame\base;
 use \frame\core\Task;
 
 class Controller
 {
-
     protected $request;
     protected $response;
     
@@ -91,14 +94,25 @@ class Controller
         return;
     }
 
+    /**
+     * @param Task $task
+     */
     public function addTask(Task $task) {
         $this->response->addTask($task);
     }
 
+    /**
+     * @param $protocol
+     */
     public function setProtocol($protocol) {
         $this->response->protocol = $protocol;
     }
-    
+
+    /**
+     * @param $_viewFile
+     * @param null $_data
+     * @return string
+     */
     private function renderFile($_viewFile, $_data = null) {
         if (is_array($_data)) {
             $this->_val = array_merge($this->_val, $_data);
@@ -148,7 +162,12 @@ class Controller
         $output = $this->renderFile($viewFile, $data);
         $this->send($output);
     }
-    
+
+    /**
+     * get request view
+     * @param $viewName
+     * @return bool|string
+     */
     private function getViewFile($viewName) {
         $viewFile = APP_PATH . '/views/' . $viewName;
         if (is_file($viewFile . '.php'))

@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * swoole server process class
+ * @author zengfanwei
+ */
 namespace frame\core;
 
 use frame\base\Request;
@@ -49,6 +52,9 @@ class Server
         $this->init();
     }
 
+    /**
+     * init function
+     */
     public function init()
     {
 
@@ -76,7 +82,12 @@ class Server
         $this->processName = $processName;
     }
 
-
+    /**
+     * Load config
+     * @param array $config
+     * @return bool
+     * @throws \Exception
+     */
     public function loadConfig($config = array())
     {
         if (is_string($config)) {   // $config is file path?
@@ -93,6 +104,9 @@ class Server
         return true;
     }
 
+    /**
+     * Init run time
+     */
     protected function _initRunTime()
     {
         $mainSetting = $this->config['server'] ? $this->config['server'] : array();
@@ -163,8 +177,6 @@ class Server
         $this->setting['dispatch_mode'] = (int) $this->setting['dispatch_mode'];
         $this->setting['daemonize'] = (int) $this->setting['daemonize'];
 
-        // $this->sw = new \swoole_http_server($this->host, $this->port, $this->mode, $this->sockType);
-        // Setting the runtime parameters
         $this->sw->set($this->setting);
 
         // Set Event Server callback function
@@ -330,7 +342,7 @@ class Server
             unset($req->data['zcookie']);
         }
         if(empty($req->data['post'])){
-            $req->data['post']=$request->rawContent();
+            $req->data['post'] = $request->rawContent();
         }
 
         $req->servType = $this->servType;

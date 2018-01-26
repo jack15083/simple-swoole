@@ -1,12 +1,12 @@
 <?php
-
+/**
+ * Base Response class
+ */
 namespace frame\base;
 use \frame\core\Task;
 
 class Response
 {
-
-
     public $fd;
     public $from_fd;
     public $servType;

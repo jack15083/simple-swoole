@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Redis base store
+ * @author zengfanwei
+ */
 namespace frame\cache;
 
 class RedisStore

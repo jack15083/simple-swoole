@@ -1,13 +1,9 @@
 <?php
 /**
- * Created by PhpStorm, defined by markyuan.
- * User: markyuan
- * Date: 2015/6/19
- * Time: 21:06
- * Version: 1.0
+ * Created by PhpStorm, defined by zengfanwei
  */
 
-define('STARTBASEPATH', dirname(dirname(dirname(__FILE__))));
+define('STARTBASEPATH', dirname(dirname(__DIR__)));
 define('STARTSHELLPATH', STARTBASEPATH . '/frame/shell/Start.php');
 
 $cmds = array('start', 'stop', 'restart', 'list');
@@ -119,12 +115,12 @@ function getProcess($processName)
 
     if (empty($ret)) {
         return [
-                'exist' => false,
+            'exist' => false,
         ];
     } else {
         return [
-                'exist' => true,
-                'pidList' => $ret,
+            'exist' => true,
+            'pidList' => $ret,
         ];
     }
 }

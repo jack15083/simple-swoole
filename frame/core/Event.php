@@ -1,12 +1,14 @@
 <?php
+/**
+ * 协议基类，实现一些公用的方法
+ * @package
+ * @author zengfanwei
+ */
+
 namespace frame\core;
 use frame\base\Request;
 use frame\base\Response;
 
-/**
- * 协议基类，实现一些公用的方法
- * @package
- */
 class Event
 {
     public $server;

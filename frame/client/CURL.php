@@ -1,10 +1,12 @@
 <?php
+/**
+ * CURL http客户端程序
+ * @author zengfanwei
+ */
+
 namespace frame\Client;
 use frame\log\Log;
 
-/**
- * CURL http客户端程序
- */
 class CURL
 {
     /**
@@ -38,16 +40,17 @@ class CURL
      * @param boolean $debug
      * @access public
      */
-    function __construct($debug = false)
+    public function __construct($debug = false)
     {
         $this->debug = $debug;
         $this->init();
     }
+
     /**
      * Init Curl session
      * @access public
      */
-    function init()
+    public function init()
     {
         // initialize curl handle
         $this->ch = curl_init();
@@ -69,51 +72,57 @@ class CURL
      * @param string $password
      * @access public
      */
-    function setCredentials($username, $password)
+    public function setCredentials($username, $password)
     {
         curl_setopt($this->ch, CURLOPT_USERPWD, "$username:$password");
     }
+
     /**
      * Set referrer
      * @param string $referrer_url
      * @access public
      */
-    function setReferrer($referrer_url)
+    public function setReferrer($referrer_url)
     {
         curl_setopt($this->ch, CURLOPT_REFERER, $referrer_url);
     }
+
     /**
      * Set client's useragent
      * @param string $useragent
      * @access public
      */
-    function setUserAgent($useragent = null)
+    public function setUserAgent($useragent = null)
     {
         $this->userAgent = $useragent;
         curl_setopt($this->ch, CURLOPT_USERAGENT, $useragent);
     }
+
     /**
      * Set proxy to use for each curl request
      * @param string $proxy
      * @access public
      */
-    function setProxy($proxy)
+    public function setProxy($proxy)
     {
         curl_setopt($this->ch, CURLOPT_PROXY, $proxy);
     }
+
     /**
      * 设置SSL模式
      */
-    function setSSLVerify($verify = true)
+    public function setSSLVerify($verify = true)
     {
         curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, $verify);
         curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, $verify);
     }
-    function setMethod($method)
+
+    public function setMethod($method)
     {
         curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, $method);
         $this->httpMethod = $method;
     }
+
     /**
      * Send post data to target URL
      * return data returned from url or false if error occured
@@ -124,92 +133,84 @@ class CURL
      * @return string data
      * @access public
      */
-    function post($url, $postdata, $ip = null, $timeout = 10)
+    public function post($url, $postdata, $ip = null, $timeout = 10)
     {
         // set url to post to
         curl_setopt($this->ch, CURLOPT_URL, $url);
         // return into a variable rather than displaying it
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
         //bind to specific ip address if it is sent trough arguments
-        if ($ip)
-        {
-            if ($this->debug)
-            {
+        if ($ip) {
+            if ($this->debug) {
                 echo "Binding to ip $ip\n";
             }
             curl_setopt($this->ch, CURLOPT_INTERFACE, $ip);
         }
+
         //set curl function timeout to $timeout
         curl_setopt($this->ch, CURLOPT_TIMEOUT, $timeout);
         //set method to post
-        if (empty($this->httpMethod))
-        {
+        if (empty($this->httpMethod)) {
             curl_setopt($this->ch, CURLOPT_POST, true);
         }
+
         //generate post string
         $post_array = array();
-        if (is_array($postdata))
-        {
-            foreach ($postdata as $key => $value)
-            {
+        if (is_array($postdata)) {
+            foreach ($postdata as $key => $value) {
                 $post_array[] = urlencode($key) . "=" . urlencode($value);
             }
             $post_string = implode("&", $post_array);
-            if ($this->debug)
-            {
+            if ($this->debug) {
                 echo "Url: $url\nPost String: $post_string\n";
             }
-        }
-        else
-        {
+        } else {
             $post_string = $postdata;
         }
+
         // set post string
         curl_setopt($this->ch, CURLOPT_POSTFIELDS, $post_string);
         return $this->execute();
     }
-    function setHeaderOut($enable = true)
+
+    public function setHeaderOut($enable = true)
     {
         curl_setopt($this->ch, CURLINFO_HEADER_OUT, $enable);
     }
+
     protected function execute()
     {
-        if (count($this->reqHeader) > 0)
-        {
+        if (count($this->reqHeader) > 0) {
             $headers = array();
-            foreach($this->reqHeader as $k => $v)
-            {
+            foreach($this->reqHeader as $k => $v) {
                 $headers[] = "$k: $v";
             }
             curl_setopt($this->ch, CURLOPT_HTTPHEADER, $headers);
         }
+
         //multi curl
-        if ($this->multiHandle)
-        {
+        if ($this->multiHandle) {
             return curl_multi_add_handle($this->multiHandle, $this->ch);
         }
         //and finally send curl request
         $result = curl_exec($this->ch);
         $this->info = curl_getinfo($this->ch);
-        if ($this->info)
-        {
+        if ($this->info) {
             $this->httpCode = $this->info['http_code'];
         }
-        if (curl_errno($this->ch))
-        {
+
+        if (curl_errno($this->ch)) {
             $this->errCode = curl_errno($this->ch);
             $this->errMsg = curl_error($this->ch) . '[' . $this->errCode . ']';
-            if ($this->debug)
-            {
+            if ($this->debug) {
                 Log::error(__METHOD__ . ' ' . $this->errMsg);
             }
             return false;
         }
-        else
-        {
-            return $result;
-        }
+
+        return $result;
     }
+
     /**
      * fetch data from target URL
      * return data returned from url or false if error occured
@@ -227,16 +228,13 @@ class CURL
         curl_setopt($this->ch, CURLOPT_HTTPGET, true);
         // return into a variable rather than displaying it
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
-        if (empty($this->reqHeader['User-Agent']))
-        {
+        if (empty($this->reqHeader['User-Agent'])) {
             curl_setopt($this->ch, CURLOPT_USERAGENT, $this->userAgent);
         }
         $this->url = $url;
         //bind to specific ip address if it is sent trough arguments
-        if ($ip)
-        {
-            if ($this->debug)
-            {
+        if ($ip) {
+            if ($this->debug) {
                 Log::error("Binding to ip $ip");
             }
             curl_setopt($this->ch, CURLOPT_INTERFACE, $ip);
@@ -255,8 +253,7 @@ class CURL
      * @return boolean true on success false othervise
      * @access public
      */
-    function download($url, $fp, $ip = null, $timeout = 5)
-    {
+    public function download($url, $fp, $ip = null, $timeout = 5){
         // set url to post to
         curl_setopt($this->ch, CURLOPT_URL, $url);
         //set method to get
@@ -264,19 +261,19 @@ class CURL
         // store data into file rather than displaying it
         curl_setopt($this->ch, CURLOPT_FILE, $fp);
         //bind to specific ip address if it is sent trough arguments
-        if ($ip)
-        {
-            if ($this->debug)
-            {
+        if ($ip) {
+            if ($this->debug) {
                 Log::error("Binding to ip $ip");
             }
             curl_setopt($this->ch, CURLOPT_INTERFACE, $ip);
         }
+
         //set curl function timeout to $timeout
         curl_setopt($this->ch, CURLOPT_TIMEOUT, $timeout);
         //and finally send curl request
         return $this->execute();
     }
+
     /**
      * Send multipart post data to the target URL
      * return data returned from url or false if error occured
@@ -289,7 +286,7 @@ class CURL
      * @return string data
      * @access public
      */
-    function sendPostData($url, $postdata, $file_field_array = array(), $ip = null, $timeout = 30)
+    public function sendPostData($url, $postdata, $file_field_array = array(), $ip = null, $timeout = 30)
     {
         //set various curl options first
         // set url to post to
@@ -297,10 +294,8 @@ class CURL
         // return into a variable rather than displaying it
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
         //bind to specific ip address if it is sent trough arguments
-        if ($ip)
-        {
-            if ($this->debug)
-            {
+        if ($ip) {
+            if ($this->debug) {
                 Log::error("Binding to ip $ip");
             }
             curl_setopt($this->ch, CURLOPT_INTERFACE, $ip);
@@ -318,43 +313,37 @@ class CURL
         //generate post string
         $post_array = array();
         $post_string_array = array();
-        if (!is_array($postdata))
-        {
+        if (!is_array($postdata)) {
             return false;
         }
-        foreach ($postdata as $key => $value)
-        {
+
+        foreach ($postdata as $key => $value) {
             $post_array[$key] = $value;
             $post_string_array[] = urlencode($key) . "=" . urlencode($value);
         }
         $post_string = implode("&", $post_string_array);
-        if ($this->debug)
-        {
+        if ($this->debug) {
             echo "Post String: $post_string\n";
         }
         // set post string
         //curl_setopt($this->ch, CURLOPT_POSTFIELDS, $post_string);
         // set multipart form data - file array field-value pairs
-        if (!empty($file_field_array))
-        {
-            foreach ($file_field_array as $var_name => $var_value)
-            {
-                if (strpos(PHP_OS, "WIN") !== false)
-                {
+        if (!empty($file_field_array)) {
+            foreach ($file_field_array as $var_name => $var_value) {
+                if (strpos(PHP_OS, "WIN") !== false) {
                     $var_value = str_replace("/", "\\", $var_value);
                 } // win hack
                 $file_field_array[$var_name] = "@" . $var_value;
             }
         }
+
         // set post data
         $result_post = array_merge($post_array, $file_field_array);
         curl_setopt($this->ch, CURLOPT_POSTFIELDS, $result_post);
         //and finally send curl request
         $result = curl_exec($this->ch);
-        if (curl_errno($this->ch))
-        {
-            if ($this->debug)
-            {
+        if (curl_errno($this->ch)) {
+            if ($this->debug) {
                 $message  =  "Error Occured in Curl\n";
                 $message .=  "Error number: " . curl_errno($this->ch) . "\n";
                 $message .=  "Error message: " . curl_error($this->ch) . "\n";
@@ -362,87 +351,94 @@ class CURL
             }
             return false;
         }
-        else
-        {
+        else {
             return $result;
         }
     }
+
     /**
      * Set file location where cookie data will be stored and send on each new request
      * @param string $cookie_file path to cookie file (must be in writable dir)
      * @access public
      */
-    function storeCookies($cookie_file)
+    public function storeCookies($cookie_file)
     {
         // use cookies on each request (cookies stored in $cookie_file)
         curl_setopt ($this->ch, CURLOPT_COOKIEJAR, $cookie_file);
         curl_setopt ($this->ch, CURLOPT_COOKIEFILE, $cookie_file);
     }
-    function setHeader($k, $v)
+
+    public function setHeader($k, $v)
     {
         $this->reqHeader[$k] = $v;
     }
 
-    function setHeaders($headers)
+    public function setHeaders($headers)
     {
         $this->reqHeader = array_merge($this->reqHeader, $headers);
     }
 
-    function addHeaders(array $header)
+    public function addHeaders(array $header)
     {
         $this->reqHeader = array_merge($this->reqHeader, $header);
     }
+
     /**
      * Set custom cookie
      * @param string $cookie
      * @access public
      */
-    function setCookie($cookie)
+    public function setCookie($cookie)
     {
         curl_setopt ($this->ch, CURLOPT_COOKIE, $cookie);
     }
+
     /**
      * Get last URL info
      * usefull when original url was redirected to other location
      * @access public
      * @return string url
      */
-    function getEffectiveUrl()
+    public function getEffectiveUrl()
     {
         return curl_getinfo($this->ch, CURLINFO_EFFECTIVE_URL);
     }
+
     /**
      * Get http response code
      * @access public
      * @return int
      */
-    function getHttpCode()
+    public function getHttpCode()
     {
         return $this->httpCode;
     }
+
     /**
      * Close curl session and free resource
      * Usually no need to call this function directly
      * in case you do you have to call init() to recreate curl
      * @access public
      */
-    function close()
+    public function close()
     {
         //close curl session and free up resources
         curl_close($this->ch);
     }
+
     /**
      * 获取CURL资源句柄
      */
-    function getHandle()
+    public function getHandle()
     {
         return $this->ch;
     }
+
     /**
      * 并发CURL模式
      * @param $handle
      */
-    function setMultiHandle($handle)
+    public function setMultiHandle($handle)
     {
         $this->multiHandle = $handle;
     }

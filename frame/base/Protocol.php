@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Protocol base class
+ * @author zengfanwei
+ */
 namespace frame\base;
 
 class Protocol

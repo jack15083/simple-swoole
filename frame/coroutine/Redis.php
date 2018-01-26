@@ -28,10 +28,11 @@ class redis
     public function get($key) 
     {
         $val = $this->client->get($key);
-        if(!empty($this->client->errCode)) 
-        {
+        if(!empty($this->client->errCode)) {
             throw new \Exception($this->client->errMsg, $this->client->errCode);
         }
+
+        return $val;
         
     }
     

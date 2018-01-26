@@ -1,6 +1,8 @@
 <?php
-
-// 增加命名空间
+/**
+ * TCP client
+ * @author zengfanwei
+ */
 namespace frame\client;
 
 

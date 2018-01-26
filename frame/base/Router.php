@@ -10,13 +10,6 @@ class Router
     public $app;
 
     /**
-     * The route group attribute stack.
-     *
-     * @var array
-     */
-    protected $groupStack = [];
-
-    /**
      * All of the routes waiting to be registered.
      *
      * @var array
@@ -32,8 +25,6 @@ class Router
 
     /**
      * Router constructor.
-     *
-     * @param  \swoole  $app
      */
     public function __construct()
     {

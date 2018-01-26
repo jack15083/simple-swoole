@@ -1,4 +1,8 @@
 <?php
+/**
+ * Mysql connection pool
+ * @author zengfanwei
+ */
 namespace frame\base;
 
 use frame\log\Log;
@@ -23,8 +27,7 @@ class MysqlPool
      */
     public static function init($connkey, $argv)
     {
-        if (empty(self::$config[$connkey]['is_init']))
-        {
+        if (empty(self::$config[$connkey]['is_init'])) {
             Log::debug(__METHOD__ . " init start ");
             self::$config[$connkey]['max'] = $argv['max'];
             self::$config[$connkey]['min'] = $argv['min'];
@@ -44,8 +47,7 @@ class MysqlPool
     public static function start($connkey, $argv)
     {
 
-        if (!self::$timer_start)
-        {
+        if (!self::$timer_start) {
             Log::debug(__METHOD__ . " schedule ");
             //定时更新过期资源
             //self::schedule($connkey, $argv);
@@ -70,8 +72,7 @@ class MysqlPool
         self::init($connkey, $argv);
         self::start($connkey, $argv);
 
-        if (!self::$free_queue[$connkey]->isEmpty())
-        {
+        if (!self::$free_queue[$connkey]->isEmpty()) {
             //现有资源可处于空闲状态
             $key = self::$free_queue[$connkey]->dequeue();
             Log::debug(__METHOD__ . " free queue  key == $key ", __CLASS__);
@@ -81,25 +82,19 @@ class MysqlPool
                 'key' => $key,
                 'data' => self::update($connkey, $key, $argv),
             );
-        }
-
-        elseif (count(self::$working_pool[$connkey]) < self::$config[$connkey]['max'])
-        {
+        } elseif (count(self::$working_pool[$connkey]) < self::$config[$connkey]['max']) {
             Log::debug(__METHOD__ . " below max, current count:" . count(self::$working_pool[$connkey]), __CLASS__);
-            if(self::$close_queue[$connkey]->isEmpty())
-            {
+            if(self::$close_queue[$connkey]->isEmpty()) {
                 $key = count(self::$working_pool[$connkey]);
             }
-            else
-            {
+            else {
                 $key = self::$close_queue[$connkey]->dequeue();
             }
 
             //当前池可以再添加资源用于分配
             $resource = self::product($connkey, $argv);
             //product失败
-            if(!$resource)
-            {
+            if(!$resource) {
                 Log::info('product resource error:' . $connkey . $key);
                 return array('r' => 1);
             }
@@ -111,9 +106,7 @@ class MysqlPool
                 'key' => $key,
                 'data' => self::$working_pool[$connkey][$key]['obj'],
             );
-        }
-        else
-        {
+        } else {
             Log::error(__METHOD__ . " no resource can apply ", __CLASS__);
             return array('r' => 1);
         }
@@ -166,16 +159,13 @@ class MysqlPool
     public static function recovery($connkey, $argv)
     {
         Log::debug(__METHOD__ . 'recovery start:' . self::RECOVERY_TIME_INTERVAL);
-        swoole_timer_tick(self::RECOVERY_TIME_INTERVAL, function() use($argv)
-        {
+        swoole_timer_tick(self::RECOVERY_TIME_INTERVAL, function() use($argv) {
             Log::debug('recovery timer tick start');
-            foreach (self::$free_queue as $connkey => $queue)
-            {
+            foreach (self::$free_queue as $connkey => $queue) {
                 if($queue->isEmpty() || $queue->count() <= $argv['min'])
                     continue;
                 //空闲资源超过最小连接，关闭多余的数据库连接
-                for($i = $argv['min']; $i < $queue->count();)
-                {
+                for($i = $argv['min']; $i < $queue->count();) {
                     $key = $queue->dequeue();
                     //关闭数据库连接
                     self::$working_pool[$connkey][$key]['obj']->close();

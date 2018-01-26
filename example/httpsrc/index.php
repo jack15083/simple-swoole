@@ -7,7 +7,7 @@ require_once dirname(APP_PATH) . '/weblib/require.php';
 $appConfig = require(APP_PATH . '/config/UserConfig.php');
 
 //init app router
-$router = new \frame\base\Router($app);
+$router = new \frame\base\Router();
 $router = $router->loadRoute(APP_PATH . '/route/');
 
 //require_once '../weblib/require.php';

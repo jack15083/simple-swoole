@@ -1,4 +1,9 @@
-<?php 
+<?php
+/**
+ * Db class base mysqli
+ * Use mysql pool
+ * @author zengfanwei
+ */
 namespace frame\database;
 
 use frame\base\MysqlPool;

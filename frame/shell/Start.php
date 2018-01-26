@@ -14,6 +14,7 @@ if (!$cmd || !$name) {
     exit;
 }
 
+//自动加载引用类
 spl_autoload_register(function ($class) {
 
     // what namespace prefix should be recognized?
@@ -62,6 +63,7 @@ $server->setProcessName($name);
 $server->setRequire($config['server']['root']);
 $server->run();
 
+//自动加载所能项目录内文件
 function generateClassMapFiles($dir) {
 
     $files = array();

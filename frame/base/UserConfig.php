@@ -1,7 +1,10 @@
 <?php
+/**
+ * 用来配置用户自定义的路由规则 以及一些log级别等
+ * @author zengfanwei
+ */
 namespace frame\base;
 
-//用来配置用户自定义的路由规则 以及一些log级别等
 class  UserConfig
 {
     private $UserConf = array(
@@ -25,4 +28,3 @@ class  UserConfig
 
 }
 
-?>

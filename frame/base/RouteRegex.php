@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Base router class
+ * @author zengfanwei
+ */
 namespace frame\base;
 
 class RouteRegex extends Protocol
@@ -26,7 +29,11 @@ class RouteRegex extends Protocol
 
         $action = $route['action'];
         $arr = explode('@', $action);
-        return new Route($arr[0], $arr[1], $route['get']);
+
+        $getData = [];
+        if(!empty($route['get'])) $getData = $route['get'];
+
+        return new Route($arr[0], $arr[1], $getData);
     }
 
     /**
@@ -52,6 +59,7 @@ class RouteRegex extends Protocol
             if (count($pathArr) < $matchCount)
                 continue;
 
+            //get match val from path
             for ($i = 0 ; $i < $matchCount; $i++) {
                 $getVal[$matchCount - $i] = array_pop($pathArr);
             }
@@ -63,9 +71,10 @@ class RouteRegex extends Protocol
             $pathReg .= '$#';
 
             if(!preg_match($pathReg, $uri, $matchesKey)) {
-                return false;
+                continue;
             }
 
+            $get = [];
             foreach ($matchesKey as $key => $item) {
                 if ($key == 0)  continue;
                 $get[$item] = isset($getVal[$key]) ? $getVal[$key] : '';

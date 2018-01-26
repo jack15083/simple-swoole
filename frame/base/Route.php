@@ -1,4 +1,8 @@
 <?php
+/**
+ * Base route class
+ * @author zengfanei
+ */
 namespace frame\base;
 
 
@@ -8,9 +12,8 @@ class Route
     public $action;
     public $data;
 
-    function __construct($class, $action, $data)
+    public function __construct($class, $action, $data)
     {
-
         $this->class = $class;
         $this->action = $action;
         $this->data = $data;

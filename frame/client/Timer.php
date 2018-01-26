@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Base timer clinet
+ */
 namespace frame\client;
 
 class Timer
