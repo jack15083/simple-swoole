@@ -1,5 +1,5 @@
 # Sample-Swoole
-An sample php mvc framewrok base of Swoole
+php mvc framewrok base of Swoole
 # 安装
 基于linux环境，运行需要先安装swoole 1.8 版本以上扩展，支持php 7.0
 
